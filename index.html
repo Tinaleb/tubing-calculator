@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tubing Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ════════════════════════════════════════════
+   SCREEN STYLES
+════════════════════════════════════════════ */
+:root {
+  --bg:       #0d1117;
+  --surface:  #161b22;
+  --surface2: #1c2330;
+  --border:   #30363d;
+  --accent:   #f0a500;
+  --green:    #3fb950;
+  --blue:     #58a6ff;
+  --red:      #f85149;
+  --purple:   #bc8cff;
+  --text:     #e6edf3;
+  --muted:    #8b949e;
+  --mono:     'DM Mono', monospace;
+  --sans:     'DM Sans', sans-serif;
+  --display:  'Syne', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+/* HEADER */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 32px 0;
+  position: relative;
+  overflow: hidden;
+}
+header::after {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 260px; height: 260px;
+  background: radial-gradient(circle, rgba(240,165,0,.10) 0%, transparent 70%);
+  pointer-events: none;
+}
+.header-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(240,165,0,.1);
+  border: 1px solid rgba(240,165,0,.25);
+  border-radius: 4px;
+  padding: 3px 8px;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+header h1 {
+  font-family: var(--display);
+  font-size: clamp(20px, 3.5vw, 30px);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text);
+}
+header h1 span { color: var(--accent); }
+
+/* MAIN NAV */
+.main-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+.nav-tabs { display: flex; gap: 0; }
+.main-nav-tab {
+  padding: 12px 24px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: var(--muted);
+  border-bottom: 3px solid transparent;
+  transition: all .2s;
+  user-select: none;
+  white-space: nowrap;
+}
+.main-nav-tab:hover { color: var(--text); }
+.main-nav-tab.active        { color: var(--accent); border-bottom-color: var(--accent); }
+.main-nav-tab.custom.active { color: var(--purple); border-bottom-color: var(--purple); }
+
+/* PRINT BUTTON in header */
+.btn-print-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .2s;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+.btn-print-header:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn-print-header svg { flex-shrink: 0; }
+
+/* PAGES */
+.page { display: none; }
+.page.active { display: block; }
+
+/* LAYOUT */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 20px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+@media (max-width: 680px) { .container { grid-template-columns: 1fr; } }
+.full { grid-column: 1 / -1; }
+
+/* CARDS */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 12px 12px 0 0;
+  background: var(--accent);
+}
+.card.green::before  { background: var(--green); }
+.card.blue::before   { background: var(--blue); }
+.card.red::before    { background: var(--red); }
+.card.purple::before { background: var(--purple); }
+
+.card-title {
+  font-family: var(--display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card.green  .card-title { color: var(--green); }
+.card.blue   .card-title { color: var(--blue); }
+.card.red    .card-title { color: var(--red); }
+.card.purple .card-title { color: var(--purple); }
+
+/* TUBE TABLE */
+.tube-table { width: 100%; border-collapse: collapse; }
+.tube-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  padding: 0 10px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.tube-table td {
+  padding: 9px 10px;
+  font-family: var(--mono);
+  font-size: 13px;
+  border-bottom: 1px solid rgba(48,54,61,.5);
+}
+.tube-table tr:last-child td { border-bottom: none; }
+.tube-tag {
+  display: inline-block;
+  background: rgba(240,165,0,.12);
+  color: var(--accent);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 11px;
+}
+.tube-tag.purple { background: rgba(188,140,255,.12); color: var(--purple); }
+.cm-val { color: var(--accent); font-weight: 500; }
+.mm-val { color: var(--blue);   font-weight: 500; }
+.muted  { color: var(--muted);  font-size: 12px; }
+.total-row td { border-top: 1px solid var(--border); padding-top: 12px; font-weight: 600; color: var(--text); }
+
+/* SCALE GRID */
+.scale-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 4px;
+}
+@media (max-width: 480px) { .scale-grid { grid-template-columns: 1fr; } }
+.scale-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 12px;
+  text-align: center;
+}
+.scale-box .sq { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+.scale-box .sv { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--green); line-height: 1; }
+.scale-box .su { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+/* INPUTS */
+.input-group { margin-bottom: 14px; }
+.input-group label {
+  display: block;
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.input-row { display: flex; gap: 8px; align-items: center; }
+input[type="number"], input[type="text"], select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  padding: 9px 13px;
+  width: 100%;
+  outline: none;
+  transition: border-color .2s;
+  -moz-appearance: textfield;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button { -webkit-appearance: none; }
+input:focus, select:focus { border-color: var(--accent); }
+
+/* BUTTONS */
+.btn {
+  background: var(--accent);
+  color: #0d1117;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-family: var(--display);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity .15s, transform .1s;
+  letter-spacing: .5px;
+  flex-shrink: 0;
+}
+.btn:hover { opacity: .85; }
+.btn:active { transform: scale(.97); }
+.btn.green  { background: var(--green);  color: #0d1117; }
+.btn.blue   { background: var(--blue);   color: #0d1117; }
+.btn.purple { background: var(--purple); color: #0d1117; }
+.btn.ghost  { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+.btn.ghost:hover { border-color: var(--text); color: var(--text); }
+.btn.danger { background: transparent; border: 1px solid rgba(248,81,73,.4); color: var(--red); }
+.btn.danger:hover { background: rgba(248,81,73,.1); border-color: var(--red); }
+.btn.sm { padding: 6px 12px; font-size: 11px; }
+
+/* SUBTABS */
+.subtabs {
+  display: flex;
+  gap: 4px;
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 14px;
+}
+.subtab {
+  flex: 1;
+  text-align: center;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all .2s;
+  user-select: none;
+}
+.subtab.active        { background: var(--accent);  color: #0d1117; font-weight: 600; }
+.subtab.active.green  { background: var(--green);   color: #0d1117; }
+.subtab.active.purple { background: var(--purple);  color: #0d1117; }
+
+/* RESULT BLOCKS */
+.result-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 13px 15px;
+  margin-top: 10px;
+}
+.r-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.rrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(48,54,61,.4);
+}
+.rrow:last-child { border-bottom: none; padding-bottom: 0; }
+.rl { font-size: 12px; color: var(--muted); }
+.rv { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text); }
+.rv.hi     { color: var(--green);  font-size: 18px; }
+.rv.warn   { color: var(--accent); }
+.rv.danger { color: var(--red); }
+
+.alert-box {
+  background: rgba(240,165,0,.08);
+  border: 1px solid rgba(240,165,0,.28);
+  border-radius: 8px;
+  padding: 11px 13px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--accent);
+  font-family: var(--mono);
+  line-height: 1.6;
+}
+.alert-box.green  { background: rgba(63,185,80,.08);   border-color: rgba(63,185,80,.28);   color: var(--green); }
+.alert-box.purple { background: rgba(188,140,255,.08); border-color: rgba(188,140,255,.28); color: var(--purple); }
+
+hr.div { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+
+/* CUSTOM TUBE ROWS */
+.col-headers {
+  display: grid;
+  grid-template-columns: 80px 1fr 64px 100px 36px;
+  gap: 8px;
+  margin-bottom: 4px;
+  padding: 0 2px;
+}
+.col-headers span {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding-left: 10px;
+}
+.tube-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.tube-row-item {
+  display: grid;
+  grid-template-columns: 80px 1fr 64px 100px 36px;
+  gap: 8px;
+  align-items: center;
+}
+.tube-row-item input { font-size: 13px; padding: 7px 10px; }
+.qty-badge {
+  background: rgba(188,140,255,.12) !important;
+  border: 1px solid rgba(188,140,255,.3) !important;
+  color: var(--purple) !important;
+  text-align: center;
+}
+.subtotal-field {
+  background: var(--bg) !important;
+  color: var(--accent) !important;
+  cursor: default !important;
+  font-weight: 500;
+}
+.remove-btn {
+  background: rgba(248,81,73,.12);
+  border: 1px solid rgba(248,81,73,.3);
+  color: var(--red);
+  border-radius: 6px;
+  width: 36px; height: 36px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+  flex-shrink: 0;
+  font-family: var(--mono);
+}
+.remove-btn:hover { background: rgba(248,81,73,.25); }
+
+/* ACTION BAR below custom tube rows */
+.action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+.action-bar-left  { display: flex; gap: 10px; flex-wrap: wrap; }
+.action-bar-right { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* FOOTER */
+footer {
+  text-align: center;
+  margin-top: 50px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--border);
+  letter-spacing: 1px;
+}
+
+
+/* ════════════════════════════════════════════
+   PRINT STYLES
+════════════════════════════════════════════ */
+@media print {
+  /* ── Reset to white ── */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    background: #fff !important;
+    color: #111 !important;
+    font-family: 'DM Sans', Arial, sans-serif !important;
+    font-size: 11pt;
+    padding: 0;
+  }
+
+  /* Hide screen-only chrome */
+  header,
+  .main-nav,
+  .btn-print-header,
+  .action-bar,
+  .col-headers,
+  .tube-rows,
+  .subtabs,
+  .input-group,
+  .input-row,
+  .btn,
+  footer {
+    display: none !important;
+  }
+
+  /* Show only the active page */
+  .page               { display: none !important; }
+  .page.active        { display: block !important; }
+
+  /* Container: single column, full width */
+  .container {
+    display: block !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .full { width: 100% !important; }
+
+  /* Cards: clean white boxes with border */
+  .card {
+    background: #fff !important;
+    border: 1.5px solid #ccc !important;
+    border-radius: 6px !important;
+    padding: 14px 16px !important;
+    margin-bottom: 14px !important;
+    page-break-inside: avoid;
+    overflow: visible !important;
+  }
+  .card::before { display: none !important; }
+
+  /* Card accent bar replacement — top label line */
+  .card-title {
+    font-family: 'Syne', 'DM Sans', Arial, sans-serif !important;
+    font-size: 9pt !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    color: #333 !important;
+    border-bottom: 2px solid #111 !important;
+    padding-bottom: 6px !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* Tables */
+  .tube-table { width: 100% !important; border-collapse: collapse !important; }
+  .tube-table th {
+    font-size: 8pt !important;
+    color: #555 !important;
+    border-bottom: 1.5px solid #333 !important;
+    padding: 4px 8px !important;
+    text-align: left;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .tube-table td {
+    font-size: 10pt !important;
+    padding: 6px 8px !important;
+    border-bottom: 1px solid #ddd !important;
+    color: #111 !important;
+    font-family: 'DM Mono', monospace !important;
+  }
+  .tube-table tr:last-child td { border-bottom: none !important; }
+  .total-row td {
+    border-top: 2px solid #333 !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+  }
+  .tube-tag {
+    background: #eee !important;
+    color: #333 !important;
+    border-radius: 3px !important;
+    padding: 1px 5px !important;
+    font-size: 9pt !important;
+  }
+  .cm-val, .mm-val { color: #000 !important; font-weight: 600 !important; }
+  .muted { color: #555 !important; }
+
+  /* Scale grid: 3-up horizontal boxes */
+  .scale-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 10px !important;
+    margin-top: 10px !important;
+  }
+  .scale-box {
+    background: #f7f7f7 !important;
+    border: 1px solid #ccc !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    text-align: center !important;
+  }
+  .scale-box .sq { color: #666 !important; font-size: 8pt !important; margin-bottom: 4px; }
+  .scale-box .sv { color: #000 !important; font-size: 18pt !important; font-weight: 700 !important; }
+  .scale-box .su { color: #555 !important; font-size: 8pt !important; margin-top: 3px; }
+
+  /* Result blocks */
+  .result-block {
+    background: #f9f9f9 !important;
+    border: 1px solid #ccc !important;
+    border-radius: 5px !important;
+    padding: 10px 12px !important;
+    margin-top: 8px !important;
+  }
+  .r-label {
+    font-size: 8pt !important;
+    color: #666 !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    margin-bottom: 6px !important;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 4px;
+  }
+  .rrow {
+    padding: 4px 0 !important;
+    border-bottom: 1px solid #eee !important;
+    display: flex;
+    justify-content: space-between;
+  }
+  .rrow:last-child { border-bottom: none !important; }
+  .rl { color: #555 !important; font-size: 10pt !important; }
+  .rv { color: #000 !important; font-size: 10pt !important; font-weight: 600 !important; }
+  .rv.hi, .rv.warn, .rv.danger { color: #000 !important; font-size: 11pt !important; }
+
+  /* Alert boxes */
+  .alert-box {
+    background: #f5f5f5 !important;
+    border: 1px solid #bbb !important;
+    border-radius: 5px !important;
+    color: #333 !important;
+    padding: 8px 10px !important;
+    margin-top: 8px !important;
+    font-size: 9pt !important;
+  }
+
+  hr.div { border-top: 1px solid #ddd !important; margin: 10px 0 !important; }
+
+  /* Print header — injected by JS before printing */
+  #print-header {
+    display: block !important;
+    border-bottom: 2px solid #111;
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+  }
+  #print-header .ph-title {
+    font-family: 'Syne', Arial, sans-serif;
+    font-size: 16pt;
+    font-weight: 800;
+    color: #111;
+  }
+  #print-header .ph-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 9pt;
+    color: #555;
+    margin-top: 4px;
+  }
+
+  /* Hide print header on screen */
+  #print-header { display: none; }
+
+  /* Converters — side by side */
+  .card.red .full > div,
+  .card.red > div[style*="grid"] {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Print-only header (hidden on screen, shown on print) -->
+<div id="print-header">
+  <div class="ph-title">Tubing Calculator — <span id="ph-tab-name"></span></div>
+  <div class="ph-meta">Printed: <span id="ph-timestamp"></span> &nbsp;|&nbsp; Internal Production Tool</div>
+</div>
+
+<header>
+  <div class="header-badge">Production Tools</div>
+  <h1>Tubing <span>Calculator</span></h1>
+  <nav class="main-nav">
+    <div class="nav-tabs">
+      <div class="main-nav-tab active" id="nav-bottle" onclick="showPage('bottle')">2L Fraction Bottle</div>
+      <div class="main-nav-tab custom"  id="nav-custom" onclick="showPage('custom')">Custom Calculator</div>
+    </div>
+    <button class="btn-print-header" onclick="triggerPrint()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+        <rect x="6" y="14" width="12" height="8"/>
+      </svg>
+      Print
+    </button>
+  </nav>
+</header>
+
+
+<!-- ═══════════════════════════════════
+     PAGE 1 — 2L FRACTION BOTTLE
+═══════════════════════════════════ -->
+<div class="page active" id="page-bottle">
+  <div class="container">
+
+    <!-- Tube Reference -->
+    <div class="card full">
+      <div class="card-title">📐 Tube Cut Reference — Per Unit</div>
+      <table class="tube-table">
+        <thead>
+          <tr>
+            <th>Tube</th><th>Raw (cm)</th><th>Rounded ↑ (cm)</th><th>mm</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tube-tag">T1</span></td>
+            <td class="muted">7.62</td><td class="cm-val">8 cm</td><td class="mm-val">80 mm</td>
+          </tr>
+          <tr>
+            <td><span class="tube-tag">T2</span></td>
+            <td class="muted">20.32</td><td class="cm-val">21 cm</td><td class="mm-val">210 mm</td>
+          </tr>
+          <tr>
+            <td><span class="tube-tag">T3</span></td>
+            <td class="muted">27.94</td><td class="cm-val">28 cm</td><td class="mm-val">280 mm</td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="2" class="muted" style="font-size:11px">TOTAL PER UNIT</td>
+            <td class="cm-val" style="font-size:16px">57 cm</td>
+            <td class="mm-val" style="font-size:16px">570 mm</td>
+          </tr>
+        </tbody>
+      </table>
+      <hr class="div" />
+      <div class="scale-grid">
+        <div class="scale-box">
+          <div class="sq">1 Bottle</div><div class="sv">57</div><div class="su">cm · 570 mm</div>
+        </div>
+        <div class="scale-box">
+          <div class="sq">1 Set · 3 Bottles</div><div class="sv">171</div><div class="su">cm · 1,710 mm</div>
+        </div>
+        <div class="scale-box">
+          <div class="sq">Daily · 30 Bottles</div><div class="sv">1,710</div><div class="su">cm · 17,100 mm</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Production Planner -->
+    <div class="card green">
+      <div class="card-title">🔢 Production Planner</div>
+      <div class="subtabs">
+        <div class="subtab active green" id="btab-b" onclick="bSwitchTab('bottles')">By Bottles</div>
+        <div class="subtab"             id="btab-s" onclick="bSwitchTab('sets')">By Sets (3/set)</div>
+      </div>
+      <div id="bpane-bottles">
+        <div class="input-group">
+          <label>Number of Bottles</label>
+          <div class="input-row">
+            <input type="number" id="b-bottles" value="30" min="1" />
+            <button class="btn green" onclick="bCalcProduction()">Calculate</button>
+          </div>
+        </div>
+      </div>
+      <div id="bpane-sets" style="display:none">
+        <div class="input-group">
+          <label>Number of Sets (3 bottles each)</label>
+          <div class="input-row">
+            <input type="number" id="b-sets" value="10" min="1" />
+            <button class="btn green" onclick="bCalcProduction()">Calculate</button>
+          </div>
+        </div>
+      </div>
+      <div id="b-pp-result" style="display:none"></div>
+    </div>
+
+    <!-- Inventory Calculator -->
+    <div class="card blue">
+      <div class="card-title">📦 Inventory Calculator</div>
+      <div class="input-group">
+        <label>Available Tubing</label>
+        <div class="input-row">
+          <input type="number" id="b-inv-amt" value="1524" min="0.1" step="0.1" />
+          <select id="b-inv-unit">
+            <option value="cm">cm</option>
+            <option value="mm">mm</option>
+            <option value="ft">ft</option>
+            <option value="in">in</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn blue" onclick="bCalcInventory()" style="width:100%">Calculate Yield</button>
+      <div id="b-inv-result" style="display:none"></div>
+    </div>
+
+    <!-- Unit Converter -->
+    <div class="card red full">
+      <div class="card-title">🔄 Unit Converter</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div>
+          <div class="input-group">
+            <label>Feet → Centimeters</label>
+            <div class="input-row">
+              <input type="number" id="b-ft" value="50" step="0.1" min="0" />
+              <button class="btn" onclick="bConvertFt()">Convert</button>
+            </div>
+          </div>
+          <div id="b-ftcm-result" class="result-block">
+            <div class="rrow"><span class="rl">50 ft =</span><span class="rv warn">1,524.00 cm</span></div>
+            <div class="rrow"><span class="rl">In mm</span><span class="rv">15,240.0 mm</span></div>
+            <div class="rrow"><span class="rl">In inches</span><span class="rv">600.0 in</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="input-group">
+            <label>cm → mm (Tube Breakdown)</label>
+            <div class="input-row">
+              <input type="number" id="b-cm" value="57" step="1" min="0" />
+              <button class="btn" onclick="bConvertCm()">Convert</button>
+            </div>
+          </div>
+          <div id="b-cmmm-result" class="result-block">
+            <div class="r-label">1 bottle default (57 cm)</div>
+            <div class="rrow"><span class="rl">T1 · 8 cm</span><span class="rv">80 mm</span></div>
+            <div class="rrow"><span class="rl">T2 · 21 cm</span><span class="rv">210 mm</span></div>
+            <div class="rrow"><span class="rl">T3 · 28 cm</span><span class="rv">280 mm</span></div>
+            <div class="rrow"><span class="rl">Combined total</span><span class="rv warn">570 mm</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════
+     PAGE 2 — CUSTOM CALCULATOR
+═══════════════════════════════════ -->
+<div class="page" id="page-custom">
+  <div class="container">
+
+    <!-- Tube Builder -->
+    <div class="card purple full">
+      <div class="card-title">✂️ Custom Tube Definition</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="input-group" style="margin:0">
+          <label>Unit / Assembly Label</label>
+          <input type="text" id="c-unit-label" placeholder="e.g. Assembly, Cartridge, KII" />
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="input-group" style="margin:0">
+            <label>Units per Set</label>
+            <input type="number" id="c-per-set" value="3" min="1" />
+          </div>
+          <div class="input-group" style="margin:0">
+            <label>Daily Target</label>
+            <input type="number" id="c-daily-target" value="30" min="1" />
+          </div>
+        </div>
+      </div>
+
+      <div class="col-headers">
+        <span>Label</span>
+        <span>Length (cm)</span>
+        <span>Qty</span>
+        <span>Subtotal ↑</span>
+        <span></span>
+      </div>
+      <div class="tube-rows" id="c-tube-rows"></div>
+
+      <div class="action-bar">
+        <div class="action-bar-left">
+          <button class="btn ghost sm" onclick="addTubeRow()">+ Add Tube</button>
+          <button class="btn purple"   onclick="cCalculateAll()">Calculate All</button>
+        </div>
+        <div class="action-bar-right">
+          <button class="btn danger sm" onclick="cReset()">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Reference Table -->
+    <div class="card full" id="c-ref-card" style="display:none">
+      <div class="card-title">📐 Cut Reference Table</div>
+      <div id="c-ref-table-wrap"></div>
+      <hr class="div" />
+      <div class="scale-grid" id="c-scale-grid"></div>
+    </div>
+
+    <!-- Custom Production Planner -->
+    <div class="card green" id="c-planner-card" style="display:none">
+      <div class="card-title">🔢 Production Planner</div>
+      <div class="subtabs">
+        <div class="subtab active green" id="ctab-u" onclick="cSwitchTab('units')">By Units</div>
+        <div class="subtab"             id="ctab-s" onclick="cSwitchTab('sets')">By Sets</div>
+      </div>
+      <div id="cpane-units">
+        <div class="input-group">
+          <label id="c-unit-label-disp">Number of Units</label>
+          <div class="input-row">
+            <input type="number" id="c-pp-units" value="30" min="1" />
+            <button class="btn green" onclick="cCalcProduction()">Calculate</button>
+          </div>
+        </div>
+      </div>
+      <div id="cpane-sets" style="display:none">
+        <div class="input-group">
+          <label id="c-set-label-disp">Number of Sets</label>
+          <div class="input-row">
+            <input type="number" id="c-pp-sets" value="10" min="1" />
+            <button class="btn green" onclick="cCalcProduction()">Calculate</button>
+          </div>
+        </div>
+      </div>
+      <div id="c-pp-result" style="display:none"></div>
+    </div>
+
+    <!-- Custom Inventory -->
+    <div class="card blue" id="c-inv-card" style="display:none">
+      <div class="card-title">📦 Inventory Calculator</div>
+      <div class="input-group">
+        <label>Available Tubing</label>
+        <div class="input-row">
+          <input type="number" id="c-inv-amt" value="1524" min="0.1" step="0.1" />
+          <select id="c-inv-unit">
+            <option value="cm">cm</option>
+            <option value="mm">mm</option>
+            <option value="ft">ft</option>
+            <option value="in">in</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn blue" onclick="cCalcInventory()" style="width:100%">Calculate Yield</button>
+      <div id="c-inv-result" style="display:none"></div>
+    </div>
+
+    <!-- Custom Unit Converter -->
+    <div class="card red full" id="c-conv-card" style="display:none">
+      <div class="card-title">🔄 Unit Converter</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div>
+          <div class="input-group">
+            <label>Feet → Centimeters</label>
+            <div class="input-row">
+              <input type="number" id="c-ft" value="50" step="0.1" min="0" />
+              <button class="btn" onclick="cConvertFt()">Convert</button>
+            </div>
+          </div>
+          <div id="c-ftcm-result" class="result-block">
+            <div class="rrow"><span class="rl">50 ft =</span><span class="rv warn">1,524.00 cm</span></div>
+            <div class="rrow"><span class="rl">In mm</span><span class="rv">15,240.0 mm</span></div>
+            <div class="rrow"><span class="rl">In inches</span><span class="rv">600.0 in</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="input-group">
+            <label>cm → mm (Custom Breakdown)</label>
+            <div class="input-row">
+              <input type="number" id="c-cm" step="1" min="0" placeholder="enter cm" />
+              <button class="btn" onclick="cConvertCm()">Convert</button>
+            </div>
+          </div>
+          <div id="c-cmmm-result" class="result-block">
+            <div class="r-label">Run Calculate All first, then enter a value</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>Tubing Calculator · Internal Production Tool</footer>
+
+
+<script>
+// ─── UTILS ──────────────────────────────────────────────
+const fmt = (n, d = 0) =>
+  n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+function toCm(amt, unit) {
+  switch (unit) {
+    case 'cm': return amt;
+    case 'mm': return amt / 10;
+    case 'ft': return amt * 30.48;
+    case 'in': return amt * 2.54;
+  }
+}
+
+// ─── PRINT ──────────────────────────────────────────────
+function triggerPrint() {
+  // Stamp timestamp and active tab name into the print header
+  const activeTab = document.querySelector('.main-nav-tab.active');
+  document.getElementById('ph-tab-name').textContent  = activeTab ? activeTab.textContent.trim() : '';
+  document.getElementById('ph-timestamp').textContent = new Date().toLocaleString('en-US', {
+    month: 'short', day: 'numeric', year: 'numeric',
+    hour: 'numeric', minute: '2-digit', hour12: true
+  });
+  window.print();
+}
+
+// ─── MAIN NAV ───────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.main-nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('nav-'  + id).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════
+// PAGE 1 — FRACTION BOTTLE
+// ═══════════════════════════════════════════════════════
+const B_TUBES    = [{ lbl:'T1', raw:7.62, r:8 }, { lbl:'T2', raw:20.32, r:21 }, { lbl:'T3', raw:27.94, r:28 }];
+const B_PER_UNIT = 57;
+
+let bActiveTab = 'bottles';
+function bSwitchTab(tab) {
+  bActiveTab = tab;
+  document.getElementById('bpane-bottles').style.display = tab === 'bottles' ? '' : 'none';
+  document.getElementById('bpane-sets').style.display    = tab === 'sets'    ? '' : 'none';
+  document.getElementById('btab-b').classList.toggle('active', tab === 'bottles');
+  document.getElementById('btab-s').classList.toggle('active', tab === 'sets');
+  document.getElementById('b-pp-result').style.display = 'none';
+}
+
+function bCalcProduction() {
+  let units = bActiveTab === 'bottles'
+    ? parseInt(document.getElementById('b-bottles').value) || 0
+    : (parseInt(document.getElementById('b-sets').value) || 0) * 3;
+  if (units <= 0) return;
+  const sets = Math.floor(units / 3), ext = units % 3;
+  const tcm  = units * B_PER_UNIT, tmm = tcm * 10;
+  const breakdown = B_TUBES.map(t =>
+    `<div class="rrow"><span class="rl">${t.lbl} cuts (${t.r} cm × ${fmt(units)})</span><span class="rv warn">${fmt(t.r * units)} cm</span></div>`
+  ).join('');
+  const el = document.getElementById('b-pp-result');
+  el.style.display = '';
+  el.innerHTML = `
+    <div class="result-block" style="margin-top:0">
+      <div class="r-label">${fmt(units)} bottle${units!==1?'s':''} — ${fmt(sets)} set${sets!==1?'s':''}${ext?` + ${ext} extra`:''}</div>
+      <div class="rrow"><span class="rl">Total tubing required</span><span class="rv hi">${fmt(tcm)} cm</span></div>
+      <div class="rrow"><span class="rl">In millimeters</span><span class="rv">${fmt(tmm)} mm</span></div>
+      ${breakdown}
+    </div>`;
+}
+
+function bCalcInventory() {
+  const amt  = parseFloat(document.getElementById('b-inv-amt').value) || 0;
+  const unit = document.getElementById('b-inv-unit').value;
+  if (amt <= 0) return;
+  const avail   = toCm(amt, unit);
+  const bottles = Math.floor(avail / B_PER_UNIT);
+  const sets    = Math.floor(bottles / 3);
+  const excess  = avail - bottles * B_PER_UNIT;
+  const needed  = B_PER_UNIT - excess;
+  const alertCls = needed <= 0 ? 'green' : '';
+  const alertMsg = needed > 0
+    ? `&#9888; Excess: <strong>${fmt(excess,1)} cm</strong> remaining — not enough for another bottle.<br>Need <strong>${fmt(needed,1)} cm (${fmt(needed*10,0)} mm)</strong> more to complete bottle #${fmt(bottles+1)}.`
+    : `&#10003; Inventory divides evenly — no excess remaining.`;
+  const el = document.getElementById('b-inv-result');
+  el.style.display = '';
+  el.innerHTML = `
+    <div class="result-block" style="margin-top:10px">
+      <div class="r-label">${fmt(amt,1)} ${unit} = ${fmt(avail,1)} cm available</div>
+      <div class="rrow"><span class="rl">Complete bottles</span><span class="rv hi">${fmt(bottles)}</span></div>
+      <div class="rrow"><span class="rl">Complete sets (3/set)</span><span class="rv">${fmt(sets)}</span></div>
+      <div class="rrow"><span class="rl">Tubing used</span><span class="rv">${fmt(bottles*B_PER_UNIT)} cm</span></div>
+      <div class="rrow"><span class="rl">Excess remaining</span><span class="rv warn">${fmt(excess,1)} cm · ${fmt(excess*10,0)} mm</span></div>
+      <div class="rrow"><span class="rl">Daily (30 btl) status</span>
+        <span class="rv ${bottles>=30?'hi':'danger'}">${bottles>=30?'&#10003; Sufficient':'Need '+fmt((30-bottles)*B_PER_UNIT)+' cm more'}</span>
+      </div>
+    </div>
+    <div class="alert-box ${alertCls}">${alertMsg}</div>`;
+}
+
+function bConvertFt() {
+  const ft = parseFloat(document.getElementById('b-ft').value) || 0;
+  const cm = ft * 30.48, mm = cm * 10, ins = ft * 12;
+  document.getElementById('b-ftcm-result').innerHTML = `
+    <div class="rrow"><span class="rl">${fmt(ft,2)} ft =</span><span class="rv warn">${fmt(cm,2)} cm</span></div>
+    <div class="rrow"><span class="rl">In mm</span><span class="rv">${fmt(mm,1)} mm</span></div>
+    <div class="rrow"><span class="rl">In inches</span><span class="rv">${fmt(ins,1)} in</span></div>`;
+}
+
+function bConvertCm() {
+  const totalCm = parseFloat(document.getElementById('b-cm').value) || 0;
+  const ratio   = totalCm / B_PER_UNIT;
+  const t1 = Math.round(8*ratio), t2 = Math.round(21*ratio), t3 = Math.round(28*ratio);
+  document.getElementById('b-cmmm-result').innerHTML = `
+    <div class="r-label">${fmt(totalCm)} cm · ~${fmt(ratio,2)} bottles</div>
+    <div class="rrow"><span class="rl">T1 · ${t1} cm</span><span class="rv">${fmt(t1*10)} mm</span></div>
+    <div class="rrow"><span class="rl">T2 · ${t2} cm</span><span class="rv">${fmt(t2*10)} mm</span></div>
+    <div class="rrow"><span class="rl">T3 · ${t3} cm</span><span class="rv">${fmt(t3*10)} mm</span></div>
+    <div class="rrow"><span class="rl">Combined total</span><span class="rv warn">${fmt(totalCm*10)} mm</span></div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// PAGE 2 — CUSTOM CALCULATOR
+// ═══════════════════════════════════════════════════════
+let cTubeCounter = 0;
+let cPerUnit = 0;
+
+function addTubeRow(label = '', rawCm = '', qty = 1) {
+  cTubeCounter++;
+  const id  = cTubeCounter;
+  const row = document.createElement('div');
+  row.className = 'tube-row-item';
+  row.id = 'crow-' + id;
+  row.innerHTML = `
+    <input type="text"   class="c-tlabel"                 placeholder="T${id}" value="${label}" />
+    <input type="number" class="c-traw"                   placeholder="e.g. 9.525" value="${rawCm}" step="0.001" min="0" />
+    <input type="number" class="c-tqty qty-badge"         value="${qty}" min="1" step="1" />
+    <input type="number" class="c-tsubtotal subtotal-field" placeholder="—" readonly />
+    <button class="remove-btn" onclick="removeTubeRow(${id})">×</button>`;
+  document.getElementById('c-tube-rows').appendChild(row);
+
+  function refreshSubtotal() {
+    const raw = parseFloat(row.querySelector('.c-traw').value) || 0;
+    const qty = parseInt(row.querySelector('.c-tqty').value)   || 1;
+    const sub = raw > 0 ? Math.ceil(raw) * qty : 0;
+    row.querySelector('.c-tsubtotal').value = sub > 0 ? sub : '';
+  }
+  row.querySelector('.c-traw').addEventListener('input', refreshSubtotal);
+  row.querySelector('.c-tqty').addEventListener('input', refreshSubtotal);
+  if (rawCm) refreshSubtotal();
+}
+
+function removeTubeRow(id) {
+  const el = document.getElementById('crow-' + id);
+  if (el) el.remove();
+}
+
+function getTubeRows() {
+  return [...document.querySelectorAll('.tube-row-item')].map(row => {
+    const lbl = row.querySelector('.c-tlabel').value.trim() || 'T?';
+    const raw = parseFloat(row.querySelector('.c-traw').value) || 0;
+    const qty = parseInt(row.querySelector('.c-tqty').value)   || 1;
+    const r   = Math.ceil(raw);
+    const sub = r * qty;
+    return { lbl, raw, r, qty, sub };
+  }).filter(t => t.raw > 0);
+}
+
+// ── RESET ───────────────────────────────────────────────
+function cReset() {
+  // Clear config fields
+  document.getElementById('c-unit-label').value    = '';
+  document.getElementById('c-per-set').value       = '3';
+  document.getElementById('c-daily-target').value  = '30';
+
+  // Clear tube rows and re-seed with 3 blank rows
+  document.getElementById('c-tube-rows').innerHTML = '';
+  cTubeCounter = 0;
+  cPerUnit     = 0;
+  addTubeRow('T1', '', 1);
+  addTubeRow('T2', '', 1);
+  addTubeRow('T3', '', 1);
+
+  // Hide all result cards
+  ['c-ref-card','c-planner-card','c-inv-card','c-conv-card'].forEach(id =>
+    document.getElementById(id).style.display = 'none');
+
+  // Reset sub-states
+  cActiveTab = 'units';
+  document.getElementById('c-pp-result').style.display  = 'none';
+  document.getElementById('c-inv-result').style.display = 'none';
+  document.getElementById('c-cm').value = '';
+  document.getElementById('c-cmmm-result').innerHTML =
+    '<div class="r-label">Run Calculate All first, then enter a value</div>';
+
+  // Reset ft converter to default
+  document.getElementById('c-ft').value = '50';
+  document.getElementById('c-ftcm-result').innerHTML = `
+    <div class="rrow"><span class="rl">50 ft =</span><span class="rv warn">1,524.00 cm</span></div>
+    <div class="rrow"><span class="rl">In mm</span><span class="rv">15,240.0 mm</span></div>
+    <div class="rrow"><span class="rl">In inches</span><span class="rv">600.0 in</span></div>`;
+}
+
+// ── CALCULATE ALL ────────────────────────────────────────
+function cCalculateAll() {
+  const tubes = getTubeRows();
+  if (!tubes.length) { alert('Add at least one tube with a length.'); return; }
+
+  const perSet    = parseInt(document.getElementById('c-per-set').value)      || 3;
+  const dailyTgt  = parseInt(document.getElementById('c-daily-target').value) || 30;
+  const unitLabel = document.getElementById('c-unit-label').value.trim()      || 'Unit';
+
+  cPerUnit = tubes.reduce((s, t) => s + t.sub, 0);
+  const perSetTot = cPerUnit * perSet;
+  const dailyTot  = cPerUnit * dailyTgt;
+
+  const rows = tubes.map(t => `
+    <tr>
+      <td><span class="tube-tag purple">${t.lbl}</span></td>
+      <td class="muted">${t.raw}</td>
+      <td class="cm-val">${t.r} cm</td>
+      <td style="color:var(--purple);font-family:var(--mono)">× ${t.qty}</td>
+      <td class="cm-val">${fmt(t.sub)} cm</td>
+      <td class="mm-val">${fmt(t.sub*10)} mm</td>
+    </tr>`).join('');
+
+  document.getElementById('c-ref-table-wrap').innerHTML = `
+    <table class="tube-table">
+      <thead>
+        <tr>
+          <th>Tube</th><th>Raw (cm)</th><th>Rounded ↑</th>
+          <th>Qty</th><th>Subtotal (cm)</th><th>Subtotal (mm)</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+        <tr class="total-row">
+          <td colspan="4" class="muted" style="font-size:11px">TOTAL PER ${unitLabel.toUpperCase()}</td>
+          <td class="cm-val" style="font-size:16px">${fmt(cPerUnit)} cm</td>
+          <td class="mm-val" style="font-size:16px">${fmt(cPerUnit*10)} mm</td>
+        </tr>
+      </tbody>
+    </table>`;
+
+  document.getElementById('c-scale-grid').innerHTML = `
+    <div class="scale-box">
+      <div class="sq">1 ${unitLabel}</div>
+      <div class="sv">${fmt(cPerUnit)}</div>
+      <div class="su">cm · ${fmt(cPerUnit*10)} mm</div>
+    </div>
+    <div class="scale-box">
+      <div class="sq">1 Set (${perSet} ${unitLabel}s)</div>
+      <div class="sv">${fmt(perSetTot)}</div>
+      <div class="su">cm · ${fmt(perSetTot*10)} mm</div>
+    </div>
+    <div class="scale-box">
+      <div class="sq">Daily (${dailyTgt} ${unitLabel}s)</div>
+      <div class="sv">${fmt(dailyTot)}</div>
+      <div class="su">cm · ${fmt(dailyTot*10)} mm</div>
+    </div>`;
+
+  document.getElementById('c-unit-label-disp').textContent = `Number of ${unitLabel}s`;
+  document.getElementById('c-set-label-disp').textContent  = `Number of Sets (${perSet} ${unitLabel}s each)`;
+  document.getElementById('c-cm').placeholder = `${cPerUnit} (1 ${unitLabel})`;
+
+  ['c-ref-card','c-planner-card','c-inv-card','c-conv-card'].forEach(id =>
+    document.getElementById(id).style.display = '');
+
+  document.getElementById('c-pp-result').style.display  = 'none';
+  document.getElementById('c-inv-result').style.display = 'none';
+}
+
+let cActiveTab = 'units';
+function cSwitchTab(tab) {
+  cActiveTab = tab;
+  document.getElementById('cpane-units').style.display = tab === 'units' ? '' : 'none';
+  document.getElementById('cpane-sets').style.display  = tab === 'sets'  ? '' : 'none';
+  document.getElementById('ctab-u').classList.toggle('active', tab === 'units');
+  document.getElementById('ctab-s').classList.toggle('active', tab === 'sets');
+  document.getElementById('c-pp-result').style.display = 'none';
+}
+
+function cCalcProduction() {
+  if (!cPerUnit) return;
+  const perSet    = parseInt(document.getElementById('c-per-set').value)     || 3;
+  const unitLabel = document.getElementById('c-unit-label').value.trim()     || 'Unit';
+  const tubes     = getTubeRows();
+  let units = cActiveTab === 'units'
+    ? parseInt(document.getElementById('c-pp-units').value) || 0
+    : (parseInt(document.getElementById('c-pp-sets').value) || 0) * perSet;
+  if (units <= 0) return;
+
+  const sets    = Math.floor(units / perSet), ext = units % perSet;
+  const totalCm = units * cPerUnit, totalMm = totalCm * 10;
+  const breakdown = tubes.map(t => {
+    const totalCuts   = t.qty * units;
+    const totalTubeCm = t.sub * units;
+    return `<div class="rrow">
+      <span class="rl">${t.lbl} · ${t.r} cm × ${t.qty}/asm × ${fmt(units)} = ${fmt(totalCuts)} cuts</span>
+      <span class="rv warn">${fmt(totalTubeCm)} cm</span>
+    </div>`;
+  }).join('');
+
+  const el = document.getElementById('c-pp-result');
+  el.style.display = '';
+  el.innerHTML = `
+    <div class="result-block" style="margin-top:0">
+      <div class="r-label">${fmt(units)} ${unitLabel}${units!==1?'s':''} — ${fmt(sets)} set${sets!==1?'s':''}${ext?` + ${ext} extra`:''}</div>
+      <div class="rrow"><span class="rl">Total tubing required</span><span class="rv hi">${fmt(totalCm)} cm</span></div>
+      <div class="rrow"><span class="rl">In millimeters</span><span class="rv">${fmt(totalMm)} mm</span></div>
+      ${breakdown}
+    </div>`;
+}
+
+function cCalcInventory() {
+  if (!cPerUnit) return;
+  const amt       = parseFloat(document.getElementById('c-inv-amt').value)     || 0;
+  const unit      = document.getElementById('c-inv-unit').value;
+  const perSet    = parseInt(document.getElementById('c-per-set').value)       || 3;
+  const dailyTgt  = parseInt(document.getElementById('c-daily-target').value)  || 30;
+  const unitLabel = document.getElementById('c-unit-label').value.trim()       || 'Unit';
+  if (amt <= 0) return;
+
+  const avail  = toCm(amt, unit);
+  const units  = Math.floor(avail / cPerUnit);
+  const sets   = Math.floor(units / perSet);
+  const excess = avail - units * cPerUnit;
+  const needed = cPerUnit - excess;
+  const alertCls = needed <= 0 ? 'green' : 'purple';
+  const alertMsg = needed > 0
+    ? `&#9888; Excess: <strong>${fmt(excess,1)} cm</strong> remaining — not enough for another ${unitLabel}.<br>Need <strong>${fmt(needed,1)} cm (${fmt(needed*10,0)} mm)</strong> more to complete ${unitLabel} #${fmt(units+1)}.`
+    : `&#10003; Inventory divides evenly — no excess remaining.`;
+
+  const el = document.getElementById('c-inv-result');
+  el.style.display = '';
+  el.innerHTML = `
+    <div class="result-block" style="margin-top:10px">
+      <div class="r-label">${fmt(amt,1)} ${unit} = ${fmt(avail,1)} cm available</div>
+      <div class="rrow"><span class="rl">Complete ${unitLabel}s</span><span class="rv hi">${fmt(units)}</span></div>
+      <div class="rrow"><span class="rl">Complete sets</span><span class="rv">${fmt(sets)}</span></div>
+      <div class="rrow"><span class="rl">Tubing used</span><span class="rv">${fmt(units*cPerUnit)} cm</span></div>
+      <div class="rrow"><span class="rl">Excess remaining</span><span class="rv warn">${fmt(excess,1)} cm · ${fmt(excess*10,0)} mm</span></div>
+      <div class="rrow"><span class="rl">Daily target (${dailyTgt}) status</span>
+        <span class="rv ${units>=dailyTgt?'hi':'danger'}">${units>=dailyTgt?'&#10003; Sufficient':'Need '+fmt((dailyTgt-units)*cPerUnit)+' cm more'}</span>
+      </div>
+    </div>
+    <div class="alert-box ${alertCls}">${alertMsg}</div>`;
+}
+
+function cConvertFt() {
+  const ft = parseFloat(document.getElementById('c-ft').value) || 0;
+  const cm = ft * 30.48, mm = cm * 10, ins = ft * 12;
+  document.getElementById('c-ftcm-result').innerHTML = `
+    <div class="rrow"><span class="rl">${fmt(ft,2)} ft =</span><span class="rv warn">${fmt(cm,2)} cm</span></div>
+    <div class="rrow"><span class="rl">In mm</span><span class="rv">${fmt(mm,1)} mm</span></div>
+    <div class="rrow"><span class="rl">In inches</span><span class="rv">${fmt(ins,1)} in</span></div>`;
+}
+
+function cConvertCm() {
+  const totalCm = parseFloat(document.getElementById('c-cm').value) || 0;
+  if (!totalCm || !cPerUnit) return;
+  const tubes = getTubeRows();
+  const ratio  = totalCm / cPerUnit;
+  const rows   = tubes.map(t => {
+    const scaledSub = Math.round(t.sub * ratio);
+    return `<div class="rrow">
+      <span class="rl">${t.lbl} · ${t.r} cm × ${t.qty} (subtotal ${scaledSub} cm)</span>
+      <span class="rv">${fmt(scaledSub*10)} mm</span>
+    </div>`;
+  }).join('');
+  document.getElementById('c-cmmm-result').innerHTML = `
+    <div class="r-label">${fmt(totalCm)} cm · ~${fmt(ratio,2)} assemblies</div>
+    ${rows}
+    <div class="rrow"><span class="rl">Combined total</span><span class="rv warn">${fmt(totalCm*10)} mm</span></div>`;
+}
+
+// ─── INIT ────────────────────────────────────────────────
+addTubeRow('T1', '', 1);
+addTubeRow('T2', '', 1);
+addTubeRow('T3', '', 1);
+</script>
+</body>
+</html>
