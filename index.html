@@ -431,6 +431,9 @@ footer {
 }
 
 
+/* Hide print header on screen — must be outside @media print */
+#print-header { display: none; }
+
 /* ════════════════════════════════════════════
    PRINT STYLES
 ════════════════════════════════════════════ */
@@ -595,7 +598,7 @@ footer {
 
   hr.div { border-top: 1px solid #ddd !important; margin: 10px 0 !important; }
 
-  /* Print header — injected by JS before printing */
+  /* Print header — shown only during print */
   #print-header {
     display: block !important;
     border-bottom: 2px solid #111;
@@ -614,9 +617,6 @@ footer {
     color: #555;
     margin-top: 4px;
   }
-
-  /* Hide print header on screen */
-  #print-header { display: none; }
 
   /* Converters — side by side */
   .card.red .full > div,
