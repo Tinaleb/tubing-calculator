@@ -57,6 +57,10 @@ header h1 span{color:var(--gold);}
 .card.orange .ctitle{color:var(--orange);}
 .card.teal .ctitle{color:var(--teal);}
 
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;}
+.tbl-scroll .ttbl{min-width:500px;}
+.tbl-scroll.wide .ttbl{min-width:680px;}
+
 /* TUBE TABLE */
 .ttbl{width:100%;border-collapse:collapse;}
 .ttbl th{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);}
@@ -77,7 +81,7 @@ header h1 span{color:var(--gold);}
 /* SCALE GRID */
 .sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px;}
 .sgrid.two{grid-template-columns:repeat(2,1fr);}
-@media(max-width:480px){.sgrid,.sgrid.two{grid-template-columns:1fr;}}
+@media(max-width:480px){.sgrid{grid-template-columns:repeat(2,1fr);}.sgrid.two{grid-template-columns:repeat(2,1fr);}}
 .sbox{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:13px 10px;text-align:center;}
 .sbox .sq{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
 .sbox .sv{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--green);line-height:1;}
@@ -155,6 +159,17 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:13px 0;}
 .conv-input-row input{flex:1;min-width:60px;}
 .conv-input-row select{width:auto;}
 .conv-btn-row{display:flex;gap:7px;margin-bottom:0;}
+
+/* CANISTER LIMITING FACTOR */
+.limit-box{border-radius:8px;padding:13px 15px;margin-top:12px;font-family:var(--mono);font-size:11px;line-height:1.7;}
+.limit-box.ok   {background:rgba(63,185,80,.09); border:1px solid rgba(63,185,80,.3); color:var(--green);}
+.limit-box.warn {background:rgba(248,81,73,.09); border:1px solid rgba(248,81,73,.3); color:var(--red);}
+.limit-box .lbtitle{font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;opacity:.7;}
+.limit-box .lbrow{display:flex;justify-content:space-between;padding:2px 0;}
+
+/* PRINT-ONLY CONVERTER LABEL */
+.conv-print-lbl{display:none;}
+@media print{.conv-print-lbl{display:block;font-family:'DM Mono',monospace;font-size:8pt;color:#555;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;border-bottom:1px solid #ddd;padding-bottom:3px;}}
 
 /* CANISTER INV SECTIONS */
 .inv-section{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;}
@@ -261,7 +276,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
 
   <div class="card full">
     <div class="ctitle">📐 Tube Cut Reference — Per Unit</div>
-    <table class="ttbl">
+    <div class="tbl-scroll"><table class="ttbl">
       <thead><tr>
         <th>Spec</th><th>T#</th><th>Raw (cm)</th><th>Rounded ↑</th><th>mm</th><th>in</th>
       </tr></thead>
@@ -288,7 +303,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
           <td class="iv" style="font-size:15px">22.44"</td>
         </tr>
       </tbody>
-    </table>
+    </table></div>
     <div class="spec-note">All 3 cuts: 0.250" ID × 0.500" OD Silicone Tubing (3111909) &nbsp;|&nbsp; 1 set = 3 bottles &nbsp;|&nbsp; Daily target = 30 bottles</div>
     <hr class="dv"/>
     <div class="sgrid">
@@ -349,6 +364,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
           </div>
         </div>
         <div id="b-convr" class="rb">
+          <div class="conv-print-lbl">Unit Conversion Result</div>
           <div class="rlbl">All unit equivalents</div>
           <div class="rrow"><span class="rl">Feet</span><span class="rv warn">50.00 ft</span></div>
           <div class="rrow"><span class="rl">Centimeters</span><span class="rv">1,524.00 cm</span></div>
@@ -363,7 +379,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
           </div>
           <div class="conv-btn-row">
             <button class="btn" onclick="bCm()">Breakdown</button>
-            <button class="btn zero" onclick="()=>{document.getElementById('b-cm').value='';document.getElementById('b-cmr').innerHTML=dfltBreakdown();}">✕ Zero</button>
+            <button class="btn zero" onclick="bZeroCm()">✕ Zero</button>
           </div>
         </div>
         <div id="b-cmr" class="rb">
@@ -389,7 +405,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
 
   <div class="card full orange">
     <div class="ctitle">📐 Tube Cut Reference — Per Needle Bank</div>
-    <table class="ttbl">
+    <div class="tbl-scroll wide"><table class="ttbl">
       <thead><tr>
         <th>Spec</th><th>T#</th><th>Raw (cm)</th><th>Rounded ↑</th><th>Qty/Bank</th>
         <th>Sub (cm)</th><th>Sub (mm)</th><th>Sub (in)</th>
@@ -420,7 +436,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
           <td class="iv" style="font-size:15px">118.90"</td>
         </tr>
       </tbody>
-    </table>
+    </table></div>
     <div class="spec-note">All 3 cuts: 0.104" ID × 0.192" OD Silicone Tubing (3112192) &nbsp;|&nbsp; 1 set = 1 needle bank &nbsp;|&nbsp; Daily target = 12 needle banks</div>
     <hr class="dv"/>
     <div class="sgrid">
@@ -481,6 +497,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
           </div>
         </div>
         <div id="nb-convr" class="rb">
+          <div class="conv-print-lbl">Unit Conversion Result</div>
           <div class="rlbl">All unit equivalents</div>
           <div class="rrow"><span class="rl">Feet</span><span class="rv warn">50.00 ft</span></div>
           <div class="rrow"><span class="rl">Centimeters</span><span class="rv">1,524.00 cm</span></div>
@@ -522,7 +539,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
   <!-- Reference (static — 1, 4, 8) -->
   <div class="card full teal">
     <div class="ctitle">📐 Tube Cut Reference — Per Canister</div>
-    <table class="ttbl">
+    <div class="tbl-scroll"><table class="ttbl">
       <thead><tr>
         <th>Spec</th><th>T#</th><th>Raw (cm)</th><th>Rounded ↑</th><th>mm</th><th>in</th>
       </tr></thead>
@@ -543,7 +560,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
           <td class="cv">8 cm</td><td class="mv">80 mm</td><td class="iv">3.15"</td>
         </tr>
       </tbody>
-    </table>
+    </table></div>
     <div class="spec-note">⚠ Three different tube specifications — each tube comes from a separate roll. See inventory section below.</div>
     <hr class="dv"/>
     <!-- Static 3-column scale: 1 / 4 / 8 canisters -->
@@ -606,6 +623,8 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
       <button class="btn t" onclick="canInv(3)" style="width:100%">Calculate T3 Yield</button>
       <div id="can-invr3" style="display:none"></div>
     </div>
+    <!-- Limiting factor summary — shown after all 3 are calculated -->
+    <div id="can-limiting" style="display:none"></div>
   </div>
 
   <!-- Canister Unit Converter -->
@@ -629,6 +648,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
           </div>
         </div>
         <div id="can-convr" class="rb">
+          <div class="conv-print-lbl">Unit Conversion Result</div>
           <div class="rlbl">All unit equivalents</div>
           <div class="rrow"><span class="rl">Feet</span><span class="rv warn">50.00 ft</span></div>
           <div class="rrow"><span class="rl">Centimeters</span><span class="rv">1,524.00 cm</span></div>
@@ -792,6 +812,7 @@ function allUnitsHtml(val, fromUnit){
   const cm = toCm(val, fromUnit);
   const mm = cm*10, ft = cm/30.48, ins = cm/2.54;
   return `
+    <div class="conv-print-lbl">Unit Conversion Result</div>
     <div class="rlbl">${fmt(val,3)} ${fromUnit} converted</div>
     <div class="rrow"><span class="rl">Feet</span><span class="rv ${fromUnit==='ft'?'warn':''}    ">${fi(ft)} ft</span></div>
     <div class="rrow"><span class="rl">Centimeters</span><span class="rv ${fromUnit==='cm'?'warn':''}">${fi(cm)} cm</span></div>
@@ -974,6 +995,8 @@ let canDaily=4;
 
 function canSetDaily(n){
   canDaily=n;
+  canYields[1]=null; canYields[2]=null; canYields[3]=null;
+  document.getElementById('can-limiting').style.display='none';
   document.getElementById('tog4').classList.toggle('active',n===4);
   document.getElementById('tog8').classList.toggle('active',n===8);
   document.getElementById('can-daily-lbl').textContent='Daily target set to '+n+' canisters';
@@ -1008,6 +1031,10 @@ function canCalc(){
     ${bd}</div>`;
 }
 
+// Track canister inv yields per tube for limiting factor
+const canYields = {1:null, 2:null, 3:null};
+const canSpecs  = ['0.500" ID × 0.750" OD', '0.375" ID × 0.625" OD', '0.250" ID × 0.500" OD'];
+
 function canInv(n){
   const amt=parseFloat(document.getElementById(`can-inv${n}`).value)||0;
   const unit=document.getElementById(`can-iu${n}`).value;
@@ -1035,6 +1062,29 @@ function canInv(n){
       </div>
     </div>
     <div class="abox ${ok?'green':'teal'}">${msg}</div>`;
+  canYields[n] = units;
+  updateCanLimiting();
+}
+function updateCanLimiting(){
+  const el = document.getElementById('can-limiting');
+  const calculated = [1,2,3].filter(n => canYields[n] !== null);
+  if(calculated.length < 2){ el.style.display='none'; return; }
+  const rows = calculated.map(n => {
+    const y = canYields[n];
+    return `<div class="lbrow"><span>T${n} · ${canSpecs[n-1]}</span><span><strong>${fmt(y)}</strong> canisters</span></div>`;
+  }).join('');
+  const minYield  = Math.min(...calculated.map(n=>canYields[n]));
+  const limitTube = calculated.filter(n=>canYields[n]===minYield);
+  const limitNames = limitTube.map(n=>`T${n}`).join(' & ');
+  const allOk = minYield >= canDaily;
+  el.style.display = '';
+  el.innerHTML = `<div class="limit-box ${allOk?'ok':'warn'}">
+    <div class="lbtitle">🔑 Limiting Factor Summary</div>
+    ${rows}
+    <hr style="border:none;border-top:1px solid currentColor;opacity:.2;margin:6px 0"/>
+    <div class="lbrow"><span>Limiting tube</span><span><strong>${limitNames}</strong> → max <strong>${fmt(minYield)}</strong> canisters</span></div>
+    <div class="lbrow"><span>Daily target (${canDaily})</span><span>${allOk?'&#10003; All tubes sufficient':'&#9888; Production limited to '+fmt(minYield)+' canisters'}</span></div>
+  </div>`;
 }
 function canConv(){
   const v=parseFloat(document.getElementById('can-cval').value)||0;
@@ -1180,7 +1230,10 @@ function cZeroConv(){
   document.getElementById('c-convr').innerHTML=zeroConvHtml();
 }
 function cCm(){
-  if(!cPU)return;
+  if(!cPU){
+    document.getElementById('c-cmr').innerHTML='<div class="abox purple">Run <strong>Calculate All</strong> first to define your tube layout, then enter a cm value here.</div>';
+    return;
+  }
   const tc=parseFloat(document.getElementById('c-cm').value)||0;
   if(!tc)return;
   const tubes=cGetRows();
