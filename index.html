@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="theme-color" content="#0d1117"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Tubing Calc"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
 <title>Tubing Calculator</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
@@ -30,6 +36,7 @@ header h1 span{color:var(--gold);}
 .mntab.t-nb.active{color:var(--orange);border-bottom-color:var(--orange);}
 .mntab.t-can.active{color:var(--teal);border-bottom-color:var(--teal);}
 .mntab.t-cust.active{color:var(--purple);border-bottom-color:var(--purple);}
+.mntab.t-calc.active{color:var(--blue);border-bottom-color:var(--blue);}
 .btn-print{display:flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:7px 13px;font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-bottom:6px;}
 .btn-print:hover{border-color:var(--gold);color:var(--gold);}
 
@@ -194,11 +201,41 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:13px 0;}
 
 footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;color:var(--border);letter-spacing:1px;}
 
+/* ── CALCULATOR ── */
+.calc-wrap{max-width:380px;margin:0 auto;padding:24px 18px 0;}
+.calc-display{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px 20px 14px;margin-bottom:12px;min-height:90px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.calc-expr{font-family:var(--mono);font-size:12px;color:var(--muted);min-height:18px;word-break:break-all;text-align:right;}
+.calc-result{font-family:var(--mono);font-size:36px;font-weight:500;color:var(--text);line-height:1;word-break:break-all;text-align:right;}
+.calc-result.error{color:var(--red);font-size:22px;}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px;}
+.ck{background:var(--surf2);border:1px solid var(--border);border-radius:10px;padding:0;height:62px;font-family:var(--mono);font-size:18px;font-weight:500;color:var(--text);cursor:pointer;transition:background .13s,transform .08s;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-tap-highlight-color:transparent;}
+.ck:hover{background:var(--border);}
+.ck:active{transform:scale(.94);}
+.ck.op{color:var(--gold);background:rgba(240,165,0,.1);border-color:rgba(240,165,0,.25);}
+.ck.op:hover{background:rgba(240,165,0,.2);}
+.ck.eq{background:var(--blue);color:#0d1117;font-size:22px;border-color:var(--blue);}
+.ck.eq:hover{opacity:.88;}
+.ck.clr{color:var(--red);background:rgba(248,81,73,.1);border-color:rgba(248,81,73,.25);}
+.ck.clr:hover{background:rgba(248,81,73,.2);}
+.ck.fn{color:var(--muted);font-size:14px;}
+.ck.zero{grid-column:span 2;}
+.calc-history{background:var(--surf);border:1px solid var(--border);border-radius:12px;padding:14px 16px;max-height:180px;overflow-y:auto;}
+.calc-history::-webkit-scrollbar{width:4px;}
+.calc-history::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.ch-title{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.ch-clr{background:none;border:none;color:var(--muted);font-family:var(--mono);font-size:9px;cursor:pointer;padding:0;letter-spacing:1px;text-transform:uppercase;}
+.ch-clr:hover{color:var(--red);}
+.ch-empty{font-family:var(--mono);font-size:11px;color:var(--border);text-align:center;padding:10px 0;}
+.ch-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid rgba(48,54,61,.4);gap:12px;}
+.ch-row:last-child{border-bottom:none;}
+.ch-expr{font-family:var(--mono);font-size:11px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ch-val{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--gold);}
+
 /* ── PRINT ── */
 @media print{
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   body{background:#fff!important;color:#111!important;font-family:'DM Sans',Arial,sans-serif!important;font-size:11pt;padding:0;}
-  header,.main-nav,.btn-print,.abar,.col-hdr,.tube-rows,.stabs,.ig,.irow,.conv-input-row,.conv-btn-row,.btn,.btn-print,footer,.toggle-wrap,.daily-plan-toggle{display:none!important;}
+  header,.main-nav,.btn-print,.abar,.col-hdr,.tube-rows,.stabs,.ig,.irow,.conv-input-row,.conv-btn-row,.btn,.btn-print,footer,.toggle-wrap,.daily-plan-toggle,.calc-wrap{display:none!important;}
   .page{display:none!important;}
   .page.active{display:block!important;}
   .container{display:block!important;max-width:100%!important;padding:0!important;margin:0!important;}
@@ -259,6 +296,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
       <div class="mntab t-nb"   id="nav-nb"   onclick="showPage('nb')">Needle Bank</div>
       <div class="mntab t-can"  id="nav-can"  onclick="showPage('can')">Canister</div>
       <div class="mntab t-cust" id="nav-cust" onclick="showPage('cust')">Custom</div>
+      <div class="mntab t-calc" id="nav-calc" onclick="showPage('calc')">Calculator</div>
     </div>
     <button class="btn-print" onclick="doPrint()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
@@ -304,7 +342,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
         </tr>
       </tbody>
     </table></div>
-    <div class="spec-note">All 3 cuts: 0.250" ID × 0.500" OD Silicone Tubing (3111909) &nbsp;|&nbsp; 1 set = 3 bottles &nbsp;|&nbsp; Daily target = 30 bottles</div>
+    <div class="spec-note">All 3 cuts: 0.250" ID × 0.500" OD Silicone Tubing &nbsp;|&nbsp; 1 set = 3 bottles &nbsp;|&nbsp; Daily target = 30 bottles</div>
     <hr class="dv"/>
     <div class="sgrid">
       <div class="sbox"><div class="sq">1 Bottle</div><div class="sv">57</div><div class="su">cm · 570 mm · 22.44"</div></div>
@@ -437,7 +475,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
         </tr>
       </tbody>
     </table></div>
-    <div class="spec-note">All 3 cuts: 0.104" ID × 0.192" OD Silicone Tubing (3112192) &nbsp;|&nbsp; 1 set = 1 needle bank &nbsp;|&nbsp; Daily target = 12 needle banks</div>
+    <div class="spec-note">All 3 cuts: 0.104" ID × 0.192" OD Silicone Tubing &nbsp;|&nbsp; 1 set = 1 needle bank &nbsp;|&nbsp; Daily target = 12 needle banks</div>
     <hr class="dv"/>
     <div class="sgrid">
       <div class="sbox"><div class="sq">1 Needle Bank</div><div class="sv">302</div><div class="su">cm · 3,020 mm · 118.90"</div></div>
@@ -800,6 +838,63 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
 
 <footer>Tubing Calculator &nbsp;·&nbsp; Internal Production Tool</footer>
 
+<!-- ═══════════════════════════════════════════
+     PAGE 5 — CALCULATOR
+═══════════════════════════════════════════ -->
+<div class="page" id="page-calc">
+<div class="calc-wrap">
+
+  <!-- Display -->
+  <div class="calc-display">
+    <div class="calc-expr" id="ca-expr"></div>
+    <div class="calc-result" id="ca-result">0</div>
+  </div>
+
+  <!-- Keypad -->
+  <div class="calc-grid">
+    <!-- Row 1 -->
+    <button class="ck clr"    onclick="caClr()">C</button>
+    <button class="ck fn"     onclick="caSign()">+/−</button>
+    <button class="ck fn"     onclick="caPct()">%</button>
+    <button class="ck op"     onclick="caOp('÷')">÷</button>
+    <!-- Row 2 -->
+    <button class="ck"        onclick="caNum('7')">7</button>
+    <button class="ck"        onclick="caNum('8')">8</button>
+    <button class="ck"        onclick="caNum('9')">9</button>
+    <button class="ck op"     onclick="caOp('×')">×</button>
+    <!-- Row 3 -->
+    <button class="ck"        onclick="caNum('4')">4</button>
+    <button class="ck"        onclick="caNum('5')">5</button>
+    <button class="ck"        onclick="caNum('6')">6</button>
+    <button class="ck op"     onclick="caOp('−')">−</button>
+    <!-- Row 4 -->
+    <button class="ck"        onclick="caNum('1')">1</button>
+    <button class="ck"        onclick="caNum('2')">2</button>
+    <button class="ck"        onclick="caNum('3')">3</button>
+    <button class="ck op"     onclick="caOp('+')">+</button>
+    <!-- Row 5 -->
+    <button class="ck zero"   onclick="caNum('0')">0</button>
+    <button class="ck fn"     onclick="caDot()">.</button>
+    <button class="ck eq"     onclick="caEq()">=</button>
+  </div>
+
+  <!-- Backspace row -->
+  <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+    <button class="ck fn" style="width:62px;height:44px;font-size:14px" onclick="caBksp()">⌫</button>
+  </div>
+
+  <!-- History -->
+  <div class="calc-history">
+    <div class="ch-title">
+      <span>History</span>
+      <button class="ch-clr" onclick="caClearHist()">Clear</button>
+    </div>
+    <div id="ca-hist"><div class="ch-empty">No calculations yet</div></div>
+  </div>
+
+</div>
+</div>
+
 <script>
 // ─── UTILS ───────────────────────────────────────────
 const fmt = (n,d=0) => n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
@@ -853,6 +948,7 @@ function showPage(id){
   document.querySelectorAll('.mntab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   document.getElementById('nav-'+id).classList.add('active');
+  document.querySelector('.btn-print').style.display = id==='calc' ? 'none' : 'flex';
 }
 
 // ─── PRINT ───────────────────────────────────────────
@@ -1263,10 +1359,124 @@ function cReset(){
   document.getElementById('c-convr').innerHTML=allUnitsHtml(50,'ft');
 }
 
+// ═══════════════════════════════════════
+// PAGE 5 — CALCULATOR
+// ═══════════════════════════════════════
+let caVal='0', caExpr='', caOp_='', caWait=false, caHistory=[];
+
+function caDisp(){
+  document.getElementById('ca-result').textContent = caVal;
+  document.getElementById('ca-result').className   = 'calc-result';
+  document.getElementById('ca-expr').textContent   = caExpr;
+}
+function caNum(d){
+  if(caWait){ caVal=d; caWait=false; }
+  else{ caVal = caVal==='0' ? d : caVal+d; }
+  caDisp();
+}
+function caDot(){
+  if(caWait){ caVal='0.'; caWait=false; caDisp(); return; }
+  if(!caVal.includes('.')) caVal+='.';
+  caDisp();
+}
+function caOp(op){
+  if(caOp_ && !caWait) caEq(true);
+  caExpr = caVal+' '+op;
+  caOp_  = op;
+  caWait = true;
+  caDisp();
+}
+function caEq(silent=false){
+  if(!caOp_) return;
+  const a=parseFloat(caVal), expr=caExpr;
+  const prev=parseFloat(caExpr);
+  // get left operand
+  const lStr = caExpr.replace(/\s*[+\-×÷]\s*$/,'').trim();
+  const l=parseFloat(lStr), r=parseFloat(caVal);
+  let res;
+  if(caOp_==='+') res=l+r;
+  else if(caOp_==='−') res=l-r;
+  else if(caOp_==='×') res=l*r;
+  else if(caOp_==='÷'){
+    if(r===0){ caVal='Error'; caExpr=''; caOp_=''; caWait=false;
+      document.getElementById('ca-result').textContent='Cannot ÷ by 0';
+      document.getElementById('ca-result').className='calc-result error';
+      document.getElementById('ca-expr').textContent='';
+      return; }
+    res=l/r;
+  }
+  // round float noise
+  res = parseFloat(res.toPrecision(12));
+  const full = lStr+' '+caOp_+' '+caVal+' = '+res;
+  if(!silent){ caAddHist(full, res); }
+  caExpr = full;
+  caVal  = String(res);
+  caOp_  = '';
+  caWait = true;
+  caDisp();
+}
+function caSign(){
+  if(caVal==='0'||caVal==='') return;
+  caVal = caVal.startsWith('-') ? caVal.slice(1) : '-'+caVal;
+  caDisp();
+}
+function caPct(){
+  const v=parseFloat(caVal);
+  if(isNaN(v)) return;
+  caVal = String(parseFloat((v/100).toPrecision(12)));
+  caDisp();
+}
+function caClr(){ caVal='0'; caExpr=''; caOp_=''; caWait=false; caDisp(); }
+function caBksp(){
+  if(caWait) return;
+  caVal = caVal.length>1 ? caVal.slice(0,-1) : '0';
+  caDisp();
+}
+function caAddHist(expr, val){
+  caHistory.unshift({expr, val});
+  if(caHistory.length>20) caHistory.pop();
+  caRenderHist();
+}
+function caRenderHist(){
+  const el=document.getElementById('ca-hist');
+  if(!caHistory.length){ el.innerHTML='<div class="ch-empty">No calculations yet</div>'; return; }
+  el.innerHTML=caHistory.map(h=>
+    `<div class="ch-row">
+      <span class="ch-expr">${h.expr}</span>
+      <span class="ch-val">${h.val}</span>
+    </div>`).join('');
+}
+function caClearHist(){ caHistory=[]; caRenderHist(); }
+
+// Keyboard support on calc tab
+document.addEventListener('keydown', e=>{
+  const active=document.querySelector('.page.active');
+  if(!active||active.id!=='page-calc') return;
+  if(e.key>='0'&&e.key<='9') caNum(e.key);
+  else if(e.key==='.') caDot();
+  else if(e.key==='+'){ caOp('+'); }
+  else if(e.key==='-'){ caOp('−'); }
+  else if(e.key==='*'){ caOp('×'); }
+  else if(e.key==='/'){ e.preventDefault(); caOp('÷'); }
+  else if(e.key==='%') caPct();
+  else if(e.key==='Enter'||e.key==='=') caEq();
+  else if(e.key==='Backspace') caBksp();
+  else if(e.key==='Escape') caClr();
+});
+
 // ─── INIT ────────────────────────────────────────────
 renderCanRefGrid();
 canSetDaily(4);
 cAddRow('T1','',1); cAddRow('T2','',1); cAddRow('T3','',1);
+
+// ─── SERVICE WORKER REGISTRATION ─────────────────────
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/tubing-calculator/sw.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.log('SW registration failed:', err));
+  });
+}
 </script>
 </body>
 </html>
