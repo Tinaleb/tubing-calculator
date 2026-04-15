@@ -109,8 +109,10 @@ header h1 span{color:var(--gold);}
 .ig{margin-bottom:13px;}
 .ig label{display:block;font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
 .irow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-input[type="number"],input[type="text"],select{background:var(--surf2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:13px;padding:8px 12px;width:100%;outline:none;transition:border-color .2s;-moz-appearance:textfield;}
-input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;}
+input[type="text"],input[type="number"],select{background:var(--surf2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:13px;padding:8px 12px;width:100%;outline:none;transition:border-color .2s;}
+input[type="number"]{-moz-appearance:textfield;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+input.num-input{caret-color:var(--gold);}
 input:focus,select:focus{border-color:var(--gold);}
 select{width:auto;min-width:60px;flex-shrink:0;}
 
@@ -359,12 +361,12 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
     </div>
     <div id="bp-b">
       <div class="ig"><label>Number of Bottles</label>
-        <div class="irow"><input type="number" id="b-btl" value="30" min="1"/><button class="btn g" onclick="bCalc()">Calculate</button></div>
+        <div class="irow"><input type="text" inputmode="numeric" class="num-input" id="b-btl" value="30"/><button class="btn g" onclick="bCalc()">Calculate</button></div>
       </div>
     </div>
     <div id="bp-s" style="display:none">
       <div class="ig"><label>Number of Sets (3 bottles each)</label>
-        <div class="irow"><input type="number" id="b-set" value="10" min="1"/><button class="btn g" onclick="bCalc()">Calculate</button></div>
+        <div class="irow"><input type="text" inputmode="numeric" class="num-input" id="b-set" value="10"/><button class="btn g" onclick="bCalc()">Calculate</button></div>
       </div>
     </div>
     <div id="b-ppr" style="display:none"></div>
@@ -374,7 +376,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
     <div class="ctitle">📦 Inventory Calculator</div>
     <div class="ig"><label>Available Tubing (0.250" ID × 0.500" OD)</label>
       <div class="irow">
-        <input type="number" id="b-inv" value="1524" min="0.1" step="0.1"/>
+        <input type="text" inputmode="decimal" class="num-input" id="b-inv" value="1524"/>
         <select id="b-iunit"><option value="cm">cm</option><option value="mm">mm</option><option value="ft">ft</option><option value="in">in</option></select>
       </div>
     </div>
@@ -388,7 +390,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
       <div>
         <div class="ig"><label>Convert Any Unit</label>
           <div class="conv-input-row">
-            <input type="number" id="b-cval" value="50" step="0.001" style="flex:1"/>
+            <input type="text" inputmode="decimal" class="num-input" id="b-cval" value="50" style="flex:1"/>
             <select id="b-cfrom">
               <option value="ft">ft</option>
               <option value="cm">cm</option>
@@ -413,7 +415,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
       <div>
         <div class="ig"><label>Tube Breakdown (cm input)</label>
           <div class="conv-input-row">
-            <input type="number" id="b-cm" value="57" step="1" min="0" style="flex:1"/>
+            <input type="text" inputmode="decimal" class="num-input" id="b-cm" value="57" style="flex:1"/>
           </div>
           <div class="conv-btn-row">
             <button class="btn" onclick="bCm()">Breakdown</button>
@@ -445,42 +447,42 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
     <div class="ctitle">📐 Tube Cut Reference — Per Needle Bank</div>
     <div class="tbl-scroll wide"><table class="ttbl">
       <thead><tr>
-        <th>Spec</th><th>T#</th><th>Raw (cm)</th><th>Rounded ↑</th><th>Qty/Bank</th>
+        <th>Spec</th><th>T#</th><th>Raw (cm)</th><th>Qty/Bank</th>
         <th>Sub (cm)</th><th>Sub (mm)</th><th>Sub (in)</th>
       </tr></thead>
       <tbody>
         <tr>
           <td><span class="spec-pill nb">0.104" ID × 0.192" OD</span></td>
-          <td class="dm">T1</td><td class="dm">9.525</td><td class="cv">10 cm</td>
+          <td class="dm">T1</td><td class="dm">9.525</td>
           <td style="color:var(--orange);font-family:var(--mono)">× 14</td>
-          <td class="cv">140 cm</td><td class="mv">1,400 mm</td><td class="iv">55.12"</td>
+          <td class="cv">133.35 cm</td><td class="mv">1,333.5 mm</td><td class="iv">52.48"</td>
         </tr>
         <tr>
           <td><span class="spec-pill nb">0.104" ID × 0.192" OD</span></td>
-          <td class="dm">T2</td><td class="dm">10.795</td><td class="cv">11 cm</td>
+          <td class="dm">T2</td><td class="dm">10.795</td>
           <td style="color:var(--orange);font-family:var(--mono)">× 10</td>
-          <td class="cv">110 cm</td><td class="mv">1,100 mm</td><td class="iv">43.31"</td>
+          <td class="cv">107.95 cm</td><td class="mv">1,079.5 mm</td><td class="iv">42.48"</td>
         </tr>
         <tr>
           <td><span class="spec-pill nb">0.104" ID × 0.192" OD</span></td>
-          <td class="dm">T3</td><td class="dm">12.065</td><td class="cv">13 cm</td>
+          <td class="dm">T3</td><td class="dm">12.065</td>
           <td style="color:var(--orange);font-family:var(--mono)">× 4</td>
-          <td class="cv">52 cm</td><td class="mv">520 mm</td><td class="iv">20.47"</td>
+          <td class="cv">48.26 cm</td><td class="mv">482.6 mm</td><td class="iv">19.00"</td>
         </tr>
         <tr class="trow-total">
-          <td colspan="5" class="dm" style="font-size:10px">TOTAL PER NEEDLE BANK</td>
-          <td class="cv" style="font-size:15px">302 cm</td>
-          <td class="mv" style="font-size:15px">3,020 mm</td>
-          <td class="iv" style="font-size:15px">118.90"</td>
+          <td colspan="4" class="dm" style="font-size:10px">TOTAL PER NEEDLE BANK (rounded ↑ at end)</td>
+          <td class="cv" style="font-size:15px">290 cm</td>
+          <td class="mv" style="font-size:15px">2,900 mm</td>
+          <td class="iv" style="font-size:15px">114.17"</td>
         </tr>
       </tbody>
     </table></div>
-    <div class="spec-note">All 3 cuts: 0.104" ID × 0.192" OD Silicone Tubing &nbsp;|&nbsp; 1 set = 1 needle bank &nbsp;|&nbsp; Daily target = 12 needle banks</div>
+    <div class="spec-note">All 3 cuts: 0.104" ID × 0.192" OD Silicone Tubing &nbsp;|&nbsp; Raw total 289.56 cm → rounded ↑ to 290 cm &nbsp;|&nbsp; 1 set = 1 needle bank &nbsp;|&nbsp; Daily target = 12 needle banks</div>
     <hr class="dv"/>
     <div class="sgrid">
-      <div class="sbox"><div class="sq">1 Needle Bank</div><div class="sv">302</div><div class="su">cm · 3,020 mm · 118.90"</div></div>
-      <div class="sbox"><div class="sq">6 Needle Banks</div><div class="sv">1,812</div><div class="su">cm · 18,120 mm · 713.39"</div></div>
-      <div class="sbox"><div class="sq">Daily · 12 Banks</div><div class="sv">3,624</div><div class="su">cm · 36,240 mm · 1,426.77"</div></div>
+      <div class="sbox"><div class="sq">1 Needle Bank</div><div class="sv">290</div><div class="su">cm · 2,900 mm · 114.17"</div></div>
+      <div class="sbox"><div class="sq">6 Needle Banks</div><div class="sv">1,740</div><div class="su">cm · 17,400 mm · 685.04"</div></div>
+      <div class="sbox"><div class="sq">Daily · 12 Banks</div><div class="sv">3,480</div><div class="su">cm · 34,800 mm · 1,370.08"</div></div>
     </div>
   </div>
 
@@ -492,12 +494,12 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
     </div>
     <div id="nbp-u">
       <div class="ig"><label>Number of Needle Banks</label>
-        <div class="irow"><input type="number" id="nb-u" value="12" min="1"/><button class="btn o" onclick="nbCalc()">Calculate</button></div>
+        <div class="irow"><input type="text" inputmode="numeric" class="num-input" id="nb-u" value="12"/><button class="btn o" onclick="nbCalc()">Calculate</button></div>
       </div>
     </div>
     <div id="nbp-s" style="display:none">
       <div class="ig"><label>Number of Sets (1 bank each)</label>
-        <div class="irow"><input type="number" id="nb-s" value="12" min="1"/><button class="btn o" onclick="nbCalc()">Calculate</button></div>
+        <div class="irow"><input type="text" inputmode="numeric" class="num-input" id="nb-s" value="12"/><button class="btn o" onclick="nbCalc()">Calculate</button></div>
       </div>
     </div>
     <div id="nb-ppr" style="display:none"></div>
@@ -507,7 +509,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
     <div class="ctitle">📦 Inventory Calculator</div>
     <div class="ig"><label>Available Tubing (0.104" ID × 0.192" OD)</label>
       <div class="irow">
-        <input type="number" id="nb-inv" value="1524" min="0.1" step="0.1"/>
+        <input type="text" inputmode="decimal" class="num-input" id="nb-inv" value="1524"/>
         <select id="nb-iunit"><option value="cm">cm</option><option value="mm">mm</option><option value="ft">ft</option><option value="in">in</option></select>
       </div>
     </div>
@@ -521,7 +523,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
       <div>
         <div class="ig"><label>Convert Any Unit</label>
           <div class="conv-input-row">
-            <input type="number" id="nb-cval" value="50" step="0.001" style="flex:1"/>
+            <input type="text" inputmode="decimal" class="num-input" id="nb-cval" value="50" style="flex:1"/>
             <select id="nb-cfrom">
               <option value="ft">ft</option>
               <option value="cm">cm</option>
@@ -546,7 +548,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
       <div>
         <div class="ig"><label>NB Tube Breakdown (cm input)</label>
           <div class="conv-input-row">
-            <input type="number" id="nb-cm" value="302" step="1" min="0" style="flex:1"/>
+            <input type="text" inputmode="decimal" class="num-input" id="nb-cm" value="290" style="flex:1"/>
           </div>
           <div class="conv-btn-row">
             <button class="btn" onclick="nbCm()">Breakdown</button>
@@ -554,11 +556,11 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
           </div>
         </div>
         <div id="nb-cmr" class="rb">
-          <div class="rlbl">1 needle bank (302 cm)</div>
-          <div class="rrow"><span class="rl">T1 · 140 cm (×14 cuts)</span><span class="rv">1,400 mm · 55.12"</span></div>
-          <div class="rrow"><span class="rl">T2 · 110 cm (×10 cuts)</span><span class="rv">1,100 mm · 43.31"</span></div>
-          <div class="rrow"><span class="rl">T3 · 52 cm (×4 cuts)</span><span class="rv">520 mm · 20.47"</span></div>
-          <div class="rrow"><span class="rl">Combined</span><span class="rv warn">3,020 mm · 118.90"</span></div>
+          <div class="rlbl">1 needle bank (290 cm)</div>
+          <div class="rrow"><span class="rl">T1 · 133.35 cm (×14 cuts)</span><span class="rv">1,333.5 mm · 52.48"</span></div>
+          <div class="rrow"><span class="rl">T2 · 107.95 cm (×10 cuts)</span><span class="rv">1,079.5 mm · 42.48"</span></div>
+          <div class="rrow"><span class="rl">T3 · 48.26 cm (×4 cuts)</span><span class="rv">482.6 mm · 19.00"</span></div>
+          <div class="rrow"><span class="rl">Combined (rounded ↑)</span><span class="rv warn">2,900 mm · 114.17"</span></div>
         </div>
       </div>
     </div>
@@ -620,7 +622,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
     </div>
     <hr class="dv" style="margin:10px 0"/>
     <div class="ig"><label>Number of Canisters to Plan</label>
-      <div class="irow"><input type="number" id="can-u" value="4" min="1"/><button class="btn t" onclick="canCalc()">Calculate</button></div>
+      <div class="irow"><input type="text" inputmode="numeric" class="num-input" id="can-u" value="4"/><button class="btn t" onclick="canCalc()">Calculate</button></div>
     </div>
     <div id="can-ppr" style="display:none"></div>
   </div>
@@ -632,7 +634,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
       <div class="inv-sec-title">T1 · 0.500" ID × 0.750" OD · 61 cm per canister</div>
       <div class="ig"><label>Available T1 Tubing</label>
         <div class="irow">
-          <input type="number" id="can-inv1" value="1524" min="0.1" step="0.1"/>
+          <input type="text" inputmode="decimal" class="num-input" id="can-inv1" value="1524"/>
           <select id="can-iu1"><option value="cm">cm</option><option value="mm">mm</option><option value="ft">ft</option><option value="in">in</option></select>
         </div>
       </div>
@@ -643,7 +645,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
       <div class="inv-sec-title">T2 · 0.375" ID × 0.625" OD · 8 cm per canister</div>
       <div class="ig"><label>Available T2 Tubing</label>
         <div class="irow">
-          <input type="number" id="can-inv2" value="1524" min="0.1" step="0.1"/>
+          <input type="text" inputmode="decimal" class="num-input" id="can-inv2" value="1524"/>
           <select id="can-iu2"><option value="cm">cm</option><option value="mm">mm</option><option value="ft">ft</option><option value="in">in</option></select>
         </div>
       </div>
@@ -654,7 +656,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
       <div class="inv-sec-title">T3 · 0.250" ID × 0.500" OD · 8 cm per canister</div>
       <div class="ig"><label>Available T3 Tubing</label>
         <div class="irow">
-          <input type="number" id="can-inv3" value="1524" min="0.1" step="0.1"/>
+          <input type="text" inputmode="decimal" class="num-input" id="can-inv3" value="1524"/>
           <select id="can-iu3"><option value="cm">cm</option><option value="mm">mm</option><option value="ft">ft</option><option value="in">in</option></select>
         </div>
       </div>
@@ -672,7 +674,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
       <div>
         <div class="ig"><label>Convert Any Unit</label>
           <div class="conv-input-row">
-            <input type="number" id="can-cval" value="50" step="0.001" style="flex:1"/>
+            <input type="text" inputmode="decimal" class="num-input" id="can-cval" value="50" style="flex:1"/>
             <select id="can-cfrom">
               <option value="ft">ft</option>
               <option value="cm">cm</option>
@@ -697,7 +699,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
       <div>
         <div class="ig"><label>cm → mm / in</label>
           <div class="conv-input-row">
-            <input type="number" id="can-cm" placeholder="enter cm" step="1" min="0" style="flex:1"/>
+            <input type="text" inputmode="decimal" class="num-input" id="can-cm" placeholder="enter cm" style="flex:1"/>
           </div>
           <div class="conv-btn-row">
             <button class="btn" onclick="canCm()">Convert</button>
@@ -729,10 +731,10 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
         <div class="ig" style="margin:0"><label>Units per Set</label>
-          <input type="number" id="c-pset" value="3" min="1"/>
+          <input type="text" inputmode="numeric" class="num-input" id="c-pset" value="3"/>
         </div>
         <div class="ig" style="margin:0"><label>Daily Target</label>
-          <input type="number" id="c-dtgt" value="30" min="1"/>
+          <input type="text" inputmode="numeric" class="num-input" id="c-dtgt" value="30"/>
         </div>
       </div>
     </div>
@@ -766,12 +768,12 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
     </div>
     <div id="cp-u">
       <div class="ig"><label id="c-ul">Number of Units</label>
-        <div class="irow"><input type="number" id="c-pu" value="30" min="1"/><button class="btn g" onclick="cPlanCalc()">Calculate</button></div>
+        <div class="irow"><input type="text" inputmode="numeric" class="num-input" id="c-pu" value="30"/><button class="btn g" onclick="cPlanCalc()">Calculate</button></div>
       </div>
     </div>
     <div id="cp-s" style="display:none">
       <div class="ig"><label id="c-sl">Number of Sets</label>
-        <div class="irow"><input type="number" id="c-ps" value="10" min="1"/><button class="btn g" onclick="cPlanCalc()">Calculate</button></div>
+        <div class="irow"><input type="text" inputmode="numeric" class="num-input" id="c-ps" value="10"/><button class="btn g" onclick="cPlanCalc()">Calculate</button></div>
       </div>
     </div>
     <div id="c-ppr" style="display:none"></div>
@@ -781,7 +783,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
     <div class="ctitle">📦 Inventory Calculator</div>
     <div class="ig"><label>Available Tubing</label>
       <div class="irow">
-        <input type="number" id="c-iamt" value="1524" min="0.1" step="0.1"/>
+        <input type="text" inputmode="decimal" class="num-input" id="c-iamt" value="1524"/>
         <select id="c-iunit"><option value="cm">cm</option><option value="mm">mm</option><option value="ft">ft</option><option value="in">in</option></select>
       </div>
     </div>
@@ -795,7 +797,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
       <div>
         <div class="ig"><label>Convert Any Unit</label>
           <div class="conv-input-row">
-            <input type="number" id="c-cval" value="50" step="0.001" style="flex:1"/>
+            <input type="text" inputmode="decimal" class="num-input" id="c-cval" value="50" style="flex:1"/>
             <select id="c-cfrom">
               <option value="ft">ft</option>
               <option value="cm">cm</option>
@@ -819,7 +821,7 @@ footer{text-align:center;margin-top:48px;font-family:var(--mono);font-size:10px;
       <div>
         <div class="ig"><label>Custom Breakdown (cm input)</label>
           <div class="conv-input-row">
-            <input type="number" id="c-cm" step="1" min="0" placeholder="enter cm" style="flex:1"/>
+            <input type="text" inputmode="decimal" class="num-input" id="c-cm" step="1" min="0" placeholder="enter cm" style="flex:1"/>
           </div>
           <div class="conv-btn-row">
             <button class="btn" onclick="cCm()">Breakdown</button>
@@ -902,6 +904,72 @@ const fi  = n => fmt(n,2);
 function toCm(a,u){return u==='mm'?a/10:u==='ft'?a*30.48:u==='in'?a*2.54:a;}
 const cmIn = cm => cm/2.54;
 
+// ─── INPUT SANITIZERS ────────────────────────────────
+// Strip anything that isn't a digit, decimal point, or leading minus
+function sanitizeNum(v){ return String(v).replace(/[^0-9.\-]/g,''); }
+function sanitizeDecimal(v){
+  // Allow digits and at most one decimal point, no letters
+  let s=v.replace(/[^0-9.]/g,'');
+  const parts=s.split('.');
+  return parts.length>2 ? parts[0]+'.'+parts.slice(1).join('') : s;
+}
+function sanitizeInt(v){ return v.replace(/[^0-9]/g,''); }
+function numVal(id){ return parseFloat(sanitizeNum(document.getElementById(id).value))||0; }
+function intVal(id){ return parseInt(sanitizeNum(document.getElementById(id).value))||0; }
+
+// Attach sanitizer to all .num-input fields on load
+function attachSanitizers(){
+  document.querySelectorAll('input.num-input').forEach(el=>{
+    el.addEventListener('input', function(){
+      const pos=this.selectionStart;
+      // decimal fields allow '.'
+      if(this.inputMode==='decimal'){
+        const clean=sanitizeDecimal(this.value);
+        if(this.value!==clean){ this.value=clean; try{this.setSelectionRange(pos,pos);}catch(e){} }
+      } else {
+        const clean=sanitizeInt(this.value);
+        if(this.value!==clean){ this.value=clean; try{this.setSelectionRange(pos,pos);}catch(e){} }
+      }
+    });
+  });
+}
+
+// ─── LOCALSTORAGE — CUSTOM TAB ────────────────────────
+const LS_KEY='tubing-calc-custom-v1';
+function cSaveLocal(){
+  try{
+    const rows=[...document.querySelectorAll('.trow-item')].map(r=>({
+      lbl:r.querySelector('.c-lbl').value,
+      raw:r.querySelector('.c-raw').value,
+      qty:r.querySelector('.c-qty').value,
+    }));
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      lbl: document.getElementById('c-lbl').value,
+      pset: document.getElementById('c-pset').value,
+      dtgt: document.getElementById('c-dtgt').value,
+      rows
+    }));
+  }catch(e){}
+}
+function cLoadLocal(){
+  try{
+    const raw=localStorage.getItem(LS_KEY);
+    if(!raw) return false;
+    const d=JSON.parse(raw);
+    document.getElementById('c-lbl').value  = d.lbl  || '';
+    document.getElementById('c-pset').value = d.pset || '3';
+    document.getElementById('c-dtgt').value = d.dtgt || '30';
+    document.getElementById('c-rows').innerHTML='';
+    cCtr=0;
+    if(d.rows && d.rows.length){
+      d.rows.forEach(r=>cAddRow(r.lbl, r.raw, r.qty||1));
+    } else {
+      cAddRow('T1','',1); cAddRow('T2','',1); cAddRow('T3','',1);
+    }
+    return true;
+  }catch(e){ return false; }
+}
+
 // All-units converter HTML
 function allUnitsHtml(val, fromUnit){
   const cm = toCm(val, fromUnit);
@@ -974,7 +1042,7 @@ function bSwitch(t){
   document.getElementById('b-ppr').style.display='none';
 }
 function bCalc(){
-  let u=bTab==='b'?(parseInt(document.getElementById('b-btl').value)||0):(parseInt(document.getElementById('b-set').value)||0)*B_SET;
+  let u=bTab==='b'?(intVal('b-btl')):(intVal('b-set')*B_SET);
   if(u<=0)return;
   const sets=Math.floor(u/B_SET),ext=u%B_SET;
   const bd=B_TUBES.map((t,i)=>`<div class="rrow"><span class="rl">T${i+1} · ${t.r} cm × ${fmt(u)}</span><span class="rv warn">${fmt(t.sub*u)} cm · ${fmt(t.sub*u*10)} mm · ${fmt(cmIn(t.sub*u),2)}"</span></div>`).join('');
@@ -987,7 +1055,7 @@ function bCalc(){
     ${bd}</div>`;
 }
 function bInv(){
-  const a=parseFloat(document.getElementById('b-inv').value)||0;
+  const a=numVal('b-inv');
   const u=document.getElementById('b-iunit').value;
   if(a<=0)return;
   const el=document.getElementById('b-invr');
@@ -995,7 +1063,7 @@ function bInv(){
   el.innerHTML=invHtml(toCm(a,u),B_PU,'bottle',B_DAILY,B_SET,'');
 }
 function bConv(){
-  const v=parseFloat(document.getElementById('b-cval').value)||0;
+  const v=numVal('b-cval');
   const f=document.getElementById('b-cfrom').value;
   document.getElementById('b-convr').innerHTML=allUnitsHtml(v,f);
 }
@@ -1004,7 +1072,7 @@ function bZeroConv(){
   document.getElementById('b-convr').innerHTML=zeroConvHtml();
 }
 function bCm(){
-  const tc=parseFloat(document.getElementById('b-cm').value)||0;
+  const tc=numVal('b-cm');
   if(!tc)return;
   const r=tc/B_PU;
   const rows=B_TUBES.map((t,i)=>{const s=Math.round(t.sub*r);return`<div class="rrow"><span class="rl">T${i+1} · ${s} cm</span><span class="rv">${fmt(s*10)} mm · ${fmt(cmIn(s),2)}"</span></div>`;}).join('');
@@ -1021,8 +1089,9 @@ function bZeroCm(){
 // ═══════════════════════════════════════
 // PAGE 2 — NEEDLE BANK
 // ═══════════════════════════════════════
-const NB_TUBES=[{r:10,qty:14,sub:140},{r:11,qty:10,sub:110},{r:13,qty:4,sub:52}];
-const NB_PU=302, NB_DAILY=12;
+// Raw subtotals (no per-cut rounding); total is ceiling of raw sum = 290 cm
+const NB_TUBES=[{r:9.525,qty:14,sub:133.35},{r:10.795,qty:10,sub:107.95},{r:12.065,qty:4,sub:48.26}];
+const NB_PU=290, NB_DAILY=12;
 let nbTab='u';
 function nbSwitch(t){
   nbTab=t;
@@ -1033,22 +1102,25 @@ function nbSwitch(t){
   document.getElementById('nb-ppr').style.display='none';
 }
 function nbCalc(){
-  let u=nbTab==='u'?(parseInt(document.getElementById('nb-u').value)||0):(parseInt(document.getElementById('nb-s').value)||0);
+  let u=nbTab==='u'?(intVal('nb-u')):(intVal('nb-s'));
   if(u<=0)return;
   const bd=NB_TUBES.map((t,i)=>{
-    const tot=t.sub*u;
-    return`<div class="rrow"><span class="rl">T${i+1} · ${t.r}cm × ${t.qty} × ${fmt(u)} banks</span><span class="rv warn">${fmt(tot)} cm · ${fmt(tot*10)} mm · ${fmt(cmIn(tot),2)}"</span></div>`;
+    const tot=parseFloat((t.sub*u).toFixed(2));
+    return`<div class="rrow"><span class="rl">T${i+1} · ${t.r} cm × ${t.qty} × ${fmt(u)} banks</span><span class="rv warn">${fmt(tot,2)} cm · ${fmt(tot*10,1)} mm · ${fmt(cmIn(tot),2)}"</span></div>`;
   }).join('');
+  const rawTotal=parseFloat((NB_TUBES.reduce((s,t)=>s+t.sub,0)*u).toFixed(2));
+  const roundedTotal=Math.ceil(rawTotal);
   const el=document.getElementById('nb-ppr');
   el.style.display='';
   el.innerHTML=`<div class="rb" style="margin-top:0">
     <div class="rlbl">${fmt(u)} needle bank${u!==1?'s':''}</div>
-    <div class="rrow"><span class="rl">Total tubing required</span><span class="rv hi">${fmt(u*NB_PU)} cm</span></div>
-    <div class="rrow"><span class="rl">In mm / inches</span><span class="rv">${fmt(u*NB_PU*10)} mm · ${fmt(cmIn(u*NB_PU),2)}"</span></div>
+    <div class="rrow"><span class="rl">Raw total</span><span class="rv">${fmt(rawTotal,2)} cm</span></div>
+    <div class="rrow"><span class="rl">Total tubing required (rounded ↑)</span><span class="rv hi">${fmt(roundedTotal)} cm</span></div>
+    <div class="rrow"><span class="rl">In mm / inches</span><span class="rv">${fmt(roundedTotal*10)} mm · ${fmt(cmIn(roundedTotal),2)}"</span></div>
     ${bd}</div>`;
 }
 function nbInv(){
-  const a=parseFloat(document.getElementById('nb-inv').value)||0;
+  const a=numVal('nb-inv');
   const u=document.getElementById('nb-iunit').value;
   if(a<=0)return;
   const el=document.getElementById('nb-invr');
@@ -1056,7 +1128,7 @@ function nbInv(){
   el.innerHTML=invHtml(toCm(a,u),NB_PU,'needle bank',NB_DAILY,1,'orange');
 }
 function nbConv(){
-  const v=parseFloat(document.getElementById('nb-cval').value)||0;
+  const v=numVal('nb-cval');
   const f=document.getElementById('nb-cfrom').value;
   document.getElementById('nb-convr').innerHTML=allUnitsHtml(v,f);
 }
@@ -1065,14 +1137,18 @@ function nbZeroConv(){
   document.getElementById('nb-convr').innerHTML=zeroConvHtml();
 }
 function nbCm(){
-  const tc=parseFloat(document.getElementById('nb-cm').value)||0;
+  const tc=numVal('nb-cm');
   if(!tc)return;
+  const rawBankTotal=NB_TUBES.reduce((s,t)=>s+t.sub,0); // 289.56
   const r=tc/NB_PU;
-  const rows=NB_TUBES.map((t,i)=>{const s=Math.round(t.sub*r);return`<div class="rrow"><span class="rl">T${i+1} · ${t.r}cm × ${t.qty} = ${s} cm</span><span class="rv">${fmt(s*10)} mm · ${fmt(cmIn(s),2)}"</span></div>`;}).join('');
+  const rows=NB_TUBES.map((t,i)=>{
+    const s=parseFloat((t.sub*r).toFixed(2));
+    return`<div class="rrow"><span class="rl">T${i+1} · ${t.r}cm × ${t.qty} = ${s} cm</span><span class="rv">${fmt(s*10,1)} mm · ${fmt(cmIn(s),2)}"</span></div>`;
+  }).join('');
   document.getElementById('nb-cmr').innerHTML=`
     <div class="rlbl">${fmt(tc)} cm · ~${fmt(r,2)} needle banks</div>
     ${rows}
-    <div class="rrow"><span class="rl">Combined</span><span class="rv warn">${fmt(tc*10)} mm · ${fmt(cmIn(tc),2)}"</span></div>`;
+    <div class="rrow"><span class="rl">Combined (rounded ↑)</span><span class="rv warn">${fmt(tc*10)} mm · ${fmt(cmIn(tc),2)}"</span></div>`;
 }
 function nbZeroCm(){
   document.getElementById('nb-cm').value='';
@@ -1111,7 +1187,7 @@ function renderCanRefGrid(){
 }
 
 function canCalc(){
-  const u=parseInt(document.getElementById('can-u').value)||0;
+  const u=intVal('can-u');
   if(u<=0)return;
   const bd=CAN_TUBES.map((t,i)=>{
     const tot=t.r*u;
@@ -1132,7 +1208,7 @@ const canYields = {1:null, 2:null, 3:null};
 const canSpecs  = ['0.500" ID × 0.750" OD', '0.375" ID × 0.625" OD', '0.250" ID × 0.500" OD'];
 
 function canInv(n){
-  const amt=parseFloat(document.getElementById(`can-inv${n}`).value)||0;
+  const amt=numVal(`can-inv${n}`);
   const unit=document.getElementById(`can-iu${n}`).value;
   const perUnit=CAN_TUBES[n-1].r;
   const spec=CAN_TUBES[n-1].spec;
@@ -1183,7 +1259,7 @@ function updateCanLimiting(){
   </div>`;
 }
 function canConv(){
-  const v=parseFloat(document.getElementById('can-cval').value)||0;
+  const v=numVal('can-cval');
   const f=document.getElementById('can-cfrom').value;
   document.getElementById('can-convr').innerHTML=allUnitsHtml(v,f);
 }
@@ -1192,7 +1268,7 @@ function canZeroConv(){
   document.getElementById('can-convr').innerHTML=zeroConvHtml();
 }
 function canCm(){
-  const tc=parseFloat(document.getElementById('can-cm').value)||0;
+  const tc=numVal('can-cm');
   if(!tc)return;
   document.getElementById('can-cmr').innerHTML=`
     <div class="rrow"><span class="rl">${fmt(tc,2)} cm</span><span class="rv warn">${fmt(tc*10,1)} mm · ${fmt(cmIn(tc),2)}"</span></div>`;
@@ -1215,37 +1291,44 @@ function cAddRow(lbl='',raw='',qty=1){
   row.id='cr-'+id;
   row.innerHTML=`
     <input type="text"   class="c-lbl"  placeholder="T${id}" value="${lbl}"/>
-    <input type="number" class="c-raw"  placeholder="e.g. 9.525" value="${raw}" step="0.001" min="0"/>
-    <input type="number" class="c-qty qty-fld" value="${qty}" min="1" step="1"/>
-    <input type="number" class="c-sub sub-fld" placeholder="—" readonly/>
+    <input type="text"   inputmode="decimal" class="c-raw num-input" placeholder="e.g. 9.525" value="${raw}"/>
+    <input type="text"   inputmode="numeric" class="c-qty qty-fld num-input" value="${qty}"/>
+    <input type="text"   class="c-sub sub-fld" placeholder="—" readonly/>
     <button class="rm-btn" onclick="cRmRow(${id})">×</button>`;
   document.getElementById('c-rows').appendChild(row);
   function upd(){
-    const rv=parseFloat(row.querySelector('.c-raw').value)||0;
-    const qv=parseInt(row.querySelector('.c-qty').value)||1;
+    const rv=parseFloat(sanitizeNum(row.querySelector('.c-raw').value))||0;
+    const qv=parseInt(sanitizeNum(row.querySelector('.c-qty').value))||1;
     row.querySelector('.c-sub').value=rv>0?Math.ceil(rv)*qv:'';
+    cSaveLocal();
   }
-  row.querySelector('.c-raw').addEventListener('input',upd);
-  row.querySelector('.c-qty').addEventListener('input',upd);
-  if(raw)upd();
+  row.querySelector('.c-raw').addEventListener('input', e=>{
+    e.target.value=sanitizeDecimal(e.target.value); upd();
+  });
+  row.querySelector('.c-qty').addEventListener('input', e=>{
+    e.target.value=sanitizeInt(e.target.value); upd();
+  });
+  row.querySelector('.c-lbl').addEventListener('input', cSaveLocal);
+  if(raw) upd();
 }
 function cRmRow(id){const el=document.getElementById('cr-'+id);if(el)el.remove();}
 function cGetRows(){
   return [...document.querySelectorAll('.trow-item')].map(r=>({
     lbl:r.querySelector('.c-lbl').value.trim()||'T?',
-    raw:parseFloat(r.querySelector('.c-raw').value)||0,
-    r:Math.ceil(parseFloat(r.querySelector('.c-raw').value)||0),
-    qty:parseInt(r.querySelector('.c-qty').value)||1,
-    sub:Math.ceil(parseFloat(r.querySelector('.c-raw').value)||0)*(parseInt(r.querySelector('.c-qty').value)||1)
+    raw:parseFloat(sanitizeNum(r.querySelector('.c-raw').value))||0,
+    r:Math.ceil(parseFloat(sanitizeNum(r.querySelector('.c-raw').value))||0),
+    qty:parseInt(sanitizeNum(r.querySelector('.c-qty').value))||1,
+    sub:Math.ceil(parseFloat(sanitizeNum(r.querySelector('.c-raw').value))||0)*(parseInt(sanitizeNum(r.querySelector('.c-qty').value))||1)
   })).filter(t=>t.raw>0);
 }
 function cCalcAll(){
   const tubes=cGetRows();
   if(!tubes.length){alert('Add at least one tube with a length.');return;}
-  const ps=parseInt(document.getElementById('c-pset').value)||3;
-  const dt=parseInt(document.getElementById('c-dtgt').value)||30;
+  const ps=intVal('c-pset')||3;
+  const dt=intVal('c-dtgt')||30;
   const lbl=document.getElementById('c-lbl').value.trim()||'Unit';
   cPU=tubes.reduce((s,t)=>s+t.sub,0);
+  cSaveLocal();
   const rows=tubes.map(t=>`<tr>
     <td class="dm">${t.lbl}</td>
     <td class="dm">${t.raw}</td><td class="cv">${t.r} cm</td>
@@ -1286,10 +1369,10 @@ function cSwitch(t){
 }
 function cPlanCalc(){
   if(!cPU)return;
-  const ps=parseInt(document.getElementById('c-pset').value)||3;
+  const ps=intVal('c-pset')||3;
   const lbl=document.getElementById('c-lbl').value.trim()||'Unit';
   const tubes=cGetRows();
-  let u=cCustTab==='u'?(parseInt(document.getElementById('c-pu').value)||0):(parseInt(document.getElementById('c-ps').value)||0)*ps;
+  let u=cCustTab==='u'?(intVal('c-pu')):(intVal('c-ps')*ps);
   if(u<=0)return;
   const sets=Math.floor(u/ps),ext=u%ps;
   const bd=tubes.map(t=>{
@@ -1306,10 +1389,10 @@ function cPlanCalc(){
 }
 function cInvCalc(){
   if(!cPU)return;
-  const a=parseFloat(document.getElementById('c-iamt').value)||0;
+  const a=numVal('c-iamt');
   const u=document.getElementById('c-iunit').value;
-  const ps=parseInt(document.getElementById('c-pset').value)||3;
-  const dt=parseInt(document.getElementById('c-dtgt').value)||30;
+  const ps=intVal('c-pset')||3;
+  const dt=intVal('c-dtgt')||30;
   const lbl=document.getElementById('c-lbl').value.trim()||'Unit';
   if(a<=0)return;
   const el=document.getElementById('c-invr');
@@ -1317,7 +1400,7 @@ function cInvCalc(){
   el.innerHTML=invHtml(toCm(a,u),cPU,lbl,dt,ps,'purple');
 }
 function cConv(){
-  const v=parseFloat(document.getElementById('c-cval').value)||0;
+  const v=numVal('c-cval');
   const f=document.getElementById('c-cfrom').value;
   document.getElementById('c-convr').innerHTML=allUnitsHtml(v,f);
 }
@@ -1330,7 +1413,7 @@ function cCm(){
     document.getElementById('c-cmr').innerHTML='<div class="abox purple">Run <strong>Calculate All</strong> first to define your tube layout, then enter a cm value here.</div>';
     return;
   }
-  const tc=parseFloat(document.getElementById('c-cm').value)||0;
+  const tc=numVal('c-cm');
   if(!tc)return;
   const tubes=cGetRows();
   const r=tc/cPU;
@@ -1357,6 +1440,12 @@ function cReset(){
   document.getElementById('c-cmr').innerHTML='<div class="rlbl">Run Calculate All first, then enter a value</div>';
   document.getElementById('c-cval').value='50';
   document.getElementById('c-convr').innerHTML=allUnitsHtml(50,'ft');
+  try{ localStorage.removeItem(LS_KEY); }catch(e){}
+}
+function cAttachHeaderSave(){
+  ['c-lbl','c-pset','c-dtgt'].forEach(id=>{
+    document.getElementById(id).addEventListener('input', cSaveLocal);
+  });
 }
 
 // ═══════════════════════════════════════
@@ -1467,7 +1556,10 @@ document.addEventListener('keydown', e=>{
 // ─── INIT ────────────────────────────────────────────
 renderCanRefGrid();
 canSetDaily(4);
-cAddRow('T1','',1); cAddRow('T2','',1); cAddRow('T3','',1);
+// Load custom tab from localStorage or start with 3 blank rows
+if(!cLoadLocal()){ cAddRow('T1','',1); cAddRow('T2','',1); cAddRow('T3','',1); }
+cAttachHeaderSave();
+attachSanitizers();
 
 // ─── SERVICE WORKER REGISTRATION ─────────────────────
 if('serviceWorker' in navigator){
