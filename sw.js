@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tubing-calc-v1';
+const CACHE_NAME = 'tubing-calc-v2';
 
 const ASSETS = [
   '/tubing-calculator/',
